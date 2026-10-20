@@ -564,7 +564,7 @@ a, button, input, select, textarea {
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   body {
-    padding-bottom: 70px !important; /* Adequate buffer for sticky bottom bar */
+    padding-bottom: 76px !important; /* Adequate buffer for 62px sticky bottom bar + safe area */
   }
 
   .container {
@@ -585,22 +585,23 @@ a, button, input, select, textarea {
     margin-bottom: 22px !important;
   }
 
-  /* Sticky Bottom Quick-Access Bar */
+  /* Sticky Bottom Quick-Access Bar (Haute Parfumerie 5-Item Navigation) */
   .mobile-bottom-bar {
     display: flex !important;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 58px;
+    height: 62px;
     background: var(--bg-card);
-    border-top: 1px solid var(--border-color);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
-    z-index: 998;
+    border-top: 1px solid var(--border-gold);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+    z-index: 9998;
     justify-content: space-around;
     align-items: center;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .mobile-bottom-nav-item {
@@ -610,28 +611,84 @@ a, button, input, select, textarea {
     justify-content: center;
     text-decoration: none;
     color: var(--text-secondary);
-    font-size: 0.72rem;
+    font-size: 0.70rem;
     font-weight: 600;
-    gap: 2px;
+    letter-spacing: 0.3px;
+    gap: 3px;
     flex: 1;
     height: 100%;
     position: relative;
     cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 6px 0;
+    outline: none;
+    transition: color 0.2s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-bottom-nav-item:active {
+    transform: scale(0.92);
+  }
+
+  .mobile-bottom-nav-item svg {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.2s ease, fill 0.2s ease;
   }
 
   .mobile-bottom-nav-item.active,
   .mobile-bottom-nav-item:hover {
-    color: var(--brand-gold);
+    color: var(--brand-gold) !important;
   }
 
-  .mobile-bottom-nav-item .icon {
-    font-size: 1.15rem;
+  .mobile-bottom-nav-item.active svg {
+    transform: translateY(-1px);
+    stroke: var(--brand-gold);
+  }
+
+  .mobile-bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 2.5px;
+    background: var(--brand-gold);
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--brand-gold-glow);
+  }
+
+  .bottom-nav-icon-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .mobile-bottom-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: var(--brand-gold) !important;
+    color: #0b0c10 !important;
+    font-size: 0.65rem !important;
+    font-weight: 800 !important;
+    border-radius: 10px;
+    min-width: 17px;
+    height: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    border: 1.5px solid var(--bg-card);
     line-height: 1;
   }
 
   /* Reposition Floating WhatsApp Button above bottom bar */
   .whatsapp-float {
-    bottom: 70px !important;
+    bottom: 74px !important;
     left: 14px !important;
     padding: 8px 14px !important;
     font-size: 0.78rem !important;
@@ -639,10 +696,9 @@ a, button, input, select, textarea {
     z-index: 990 !important;
   }
 
-  /* Floating Bag Button above bottom bar on right side */
+  /* Hide Desktop Floating Cart on mobile screens since Bottom Bar has dedicated live Bag */
   .floating-cart-btn {
-    bottom: 70px !important;
-    right: 14px !important;
+    display: none !important;
   }
 
   /* Top Bar */
