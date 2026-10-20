@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHAUDHARY PARFUMS (Lahore, Pakistan)
+   CHAUDHARY PARFUMS (Pakistan)
    ATELIER CLIENT CHECKOUT & DIRECT CONCIERGE DISPATCH ENGINE
    ========================================================================== */
 

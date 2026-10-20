@@ -137,7 +137,7 @@ const AdminManager = {
         <div class="logo-mark" style="width:52px; height:52px; font-size:1.5rem; margin:0 auto 16px auto; border-color:var(--brand-gold); color:var(--brand-gold);">C</div>
         
         <h2 style="font-family:var(--font-heading); font-size:1.7rem; color:var(--text-primary); margin-bottom:6px; font-weight:700; letter-spacing:0.5px;">Atelier Operations Portal</h2>
-        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:24px;">Chaudhary Parfums Lahore • Executive Console</p>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:24px;">Chaudhary Parfums Pakistan • Executive Console</p>
 
         <div id="login-error-msg" style="display:none; padding:10px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; border-radius:8px; font-size:0.82rem; font-weight:600; margin-bottom:16px;"></div>
 

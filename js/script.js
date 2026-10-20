@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHAUDHARY PARFUMS (Chaudhary Parfums Lahore)
+   CHAUDHARY PARFUMS (Chaudhary Parfums Pakistan)
    GLOBAL CONTROLLER, MOBILE SIDEBAR DRAWER & CLEAN URLS
    ========================================================================== */
 
@@ -275,7 +275,7 @@ const CPApp = {
             <span>VIP WhatsApp Concierge</span>
           </a>
           <div class="mobile-sidebar-tagline">
-            Hand-Poured in Lahore &bull; Free Insured Delivery
+            Hand-Poured in Pakistan &bull; Free Insured Delivery
           </div>
         </div>
       `;
@@ -682,7 +682,7 @@ window.executeOrderTracking = function(queryId) {
       <div style="position:relative;">
         <div style="position:absolute; left:-33px; top:0; width:16px; height:16px; border-radius:50%; background:${isProcessing ? 'var(--status-success)' : 'var(--border-color)'}; border:3px solid var(--bg-card);"></div>
         <div style="font-weight:700; color:${isProcessing ? 'var(--text-primary)' : 'var(--text-muted)'}; font-size:0.88rem;">0015 - Picked By PostEx Courier Logistics</div>
-        <div style="font-size:0.78rem; color:var(--text-muted);">${isProcessing ? 'Scanned & Picked Up from Atelier Lahore' : 'Awaiting PostEx courier pickup'}</div>
+        <div style="font-size:0.78rem; color:var(--text-muted);">${isProcessing ? 'Scanned & Picked Up from Atelier Pakistan' : 'Awaiting PostEx courier pickup'}</div>
       </div>
 
       <div style="position:relative;">
