@@ -937,6 +937,17 @@ const AdminManager = {
     if (order) {
       order.status = newStatus;
       this.saveOrders(orders);
+
+      // Sync real-time with customer order history
+      try {
+        const hist = JSON.parse(localStorage.getItem('cp_order_history')) || [];
+        const foundHist = hist.find(h => (h.id || h.orderId) === orderId);
+        if (foundHist) {
+          foundHist.status = newStatus;
+          localStorage.setItem('cp_order_history', JSON.stringify(hist));
+        }
+      } catch(e) {}
+
       if (window.showToast) window.showToast(`Order ${orderId} updated to ${newStatus}`, 'success');
     }
   },

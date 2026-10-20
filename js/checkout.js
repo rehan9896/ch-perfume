@@ -549,7 +549,6 @@ Hello! I have placed an order on your website. Here are my complete order detail
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 *ORDER INFORMATION*
 • *Order Number:* ${orderId}
-• *Tracking ID:* ${trackingNo}
 • *Date:* ${dateStr}
 
 👤 *CUSTOMER DETAILS*

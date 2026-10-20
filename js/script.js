@@ -577,129 +577,210 @@ function renderTrackerPrompt(prefillId = '') {
   const modalContainer = document.querySelector('.global-tracker-modal');
   if (!modalContainer) return;
 
+  // Retrieve any real orders from localStorage
+  let recentOrders = [];
+  try {
+    const placed = JSON.parse(localStorage.getItem('cp_placed_orders')) || [];
+    const history = JSON.parse(localStorage.getItem('cp_order_history')) || [];
+    const combined = [...placed, ...history];
+    const seen = new Set();
+    recentOrders = combined.filter(o => {
+      const id = o.id || o.orderId;
+      if (!id || seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    }).slice(0, 3);
+  } catch(e) {}
+
+  const recentHtml = recentOrders.length > 0 
+    ? `
+      <div style="background:var(--bg-secondary); padding:12px 16px; border-radius:8px; border:1px solid var(--border-color); font-size:0.82rem; color:var(--text-secondary); line-height:1.6;">
+        <strong style="color:var(--text-primary);">Your Recent Placed Orders:</strong><br>
+        ${recentOrders.map(o => `
+          <button type="button" onclick="window.executeOrderTracking('${o.id || o.orderId}')" style="background:transparent; border:none; padding:0; color:var(--brand-gold); font-weight:700; cursor:pointer; text-decoration:underline; margin-right:12px; font-size:0.84rem;">
+            ${o.id || o.orderId} (${o.status || 'Pending'})
+          </button>
+        `).join('')}
+      </div>
+    `
+    : `
+      <div style="background:var(--bg-secondary); padding:12px 16px; border-radius:8px; border:1px solid var(--border-color); font-size:0.82rem; color:var(--text-muted); line-height:1.5;">
+        💡 <em>Your Order Number was provided upon checkout and sent to your WhatsApp (e.g. <code>CP-84920</code>).</em>
+      </div>
+    `;
+
   modalContainer.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
       <div>
-        <span class="badge" style="background:transparent; border:1px solid var(--border-gold); color:var(--brand-gold); margin-bottom:6px;">PostEx Courier Logistics</span>
-        <h3 style="font-family:var(--font-heading); font-size:1.4rem; color:var(--text-primary); margin:0; font-weight:700;">Track Consignment Status</h3>
+        <span class="badge" style="background:transparent; border:1px solid var(--border-gold); color:var(--brand-gold); margin-bottom:6px;">Chudhary Perfumes</span>
+        <h3 style="font-family:var(--font-heading); font-size:1.4rem; color:var(--text-primary); margin:0; font-weight:700;">Track Your Order</h3>
       </div>
       <button onclick="window.closeGlobalOrderTracker()" style="background:none; border:none; color:var(--text-muted); font-size:1.3rem; cursor:pointer;" aria-label="Close">✕</button>
     </div>
 
     <p style="font-size:0.86rem; color:var(--text-secondary); margin-bottom:20px; line-height:1.6;">
-      Enter your <strong>Chudhary Parfums Order ID</strong> (e.g. <code>CP-9842</code>) or <strong>PostEx CN Tracking Number</strong> to verify real-time transit status:
+      Enter your <strong>Order Number</strong> to track the real-time status of your order:
     </p>
 
     <form onsubmit="event.preventDefault(); window.executeOrderTracking(document.getElementById('track-input-id').value);" style="display:flex; flex-direction:column; gap:16px;">
       <div>
-        <label style="display:block; font-size:0.8rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Order ID or Consignment Note (CN):</label>
+        <label style="display:block; font-size:0.8rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Order Number:</label>
         <div style="display:flex; gap:10px;">
-          <input type="text" id="track-input-id" value="${prefillId}" placeholder="e.g. CP-9842 or PEX-98420192" required style="flex:1; padding:12px 16px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; color:var(--text-primary); font-size:16px; outline:none;">
-          <button type="submit" class="btn btn-primary" style="padding:12px 20px; font-weight:700;">Track</button>
+          <input type="text" id="track-input-id" value="${prefillId}" placeholder="e.g. CP-84920 or 84920" required style="flex:1; padding:12px 16px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; color:var(--text-primary); font-size:16px; outline:none;">
+          <button type="submit" class="btn btn-primary" style="padding:12px 20px; font-weight:700;">Track Order</button>
         </div>
       </div>
 
-      <div style="background:var(--bg-secondary); padding:12px 16px; border-radius:6px; border:1px solid var(--border-color); font-size:0.8rem; color:var(--text-muted);">
-        <strong>Reference Test Consignments:</strong> 
-        <span onclick="window.executeOrderTracking('CP-9842')" style="color:var(--brand-gold); font-weight:600; cursor:pointer; text-decoration:underline; margin-left:6px;">CP-9842</span>,
-        <span onclick="window.executeOrderTracking('CP-9843')" style="color:var(--brand-gold); font-weight:600; cursor:pointer; text-decoration:underline; margin-left:6px;">CP-9843</span>,
-        <span onclick="window.executeOrderTracking('CP-9844')" style="color:var(--brand-gold); font-weight:600; cursor:pointer; text-decoration:underline; margin-left:6px;">CP-9844</span>
-      </div>
+      ${recentHtml}
     </form>
   `;
 }
 
 window.executeOrderTracking = function(queryId) {
-  const cleanId = (queryId || '').trim().toUpperCase();
-  if (!cleanId) return;
+  const cleanInput = (queryId || '').trim();
+  if (!cleanInput) return;
 
   const modalContainer = document.querySelector('.global-tracker-modal');
   if (!modalContainer) return;
 
+  const cleanId = cleanInput.toUpperCase();
+  const numericOnly = cleanInput.replace(/[^0-9]/g, '');
+  const withoutPrefix = cleanId.replace(/^#?CP-?/, '');
+
   let orders = [];
   try {
-    orders = JSON.parse(localStorage.getItem('cp_placed_orders')) || [];
+    const placed = JSON.parse(localStorage.getItem('cp_placed_orders')) || [];
+    const history = JSON.parse(localStorage.getItem('cp_order_history')) || [];
+    const combined = [...placed, ...history];
+    const seen = new Set();
+    orders = combined.filter(o => {
+      const id = o.id || o.orderId;
+      if (!id || seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    });
   } catch(e) {}
 
-  if (orders.length === 0) {
-    orders = [
-      { id: 'CP-9842', customerName: 'Hamza Malik', phone: '03001234567', city: 'Lahore', items: 'Black Crown (50ml) × 1', total: 1990, date: '2026-08-01 18:30', status: 'Pending COD', trackingNo: 'PEX-98420192', courierPartner: 'PostEx Courier' },
-      { id: 'CP-9843', customerName: 'Ayesha Khan', phone: '03219876543', city: 'Karachi', items: 'Bold Rush (50ml) × 1, Fresh Aura (50ml) × 1', total: 3580, date: '2026-08-01 19:15', status: 'Dispatched', trackingNo: 'PEX-74829102', courierPartner: 'PostEx Courier' },
-      { id: 'CP-9844', customerName: 'Usman Ali', phone: '03335557788', city: 'Islamabad', items: 'Elite Touch (50ml) × 1', total: 2150, date: '2026-08-01 20:00', status: 'Delivered', trackingNo: 'PEX-63910284', courierPartner: 'PostEx Courier' }
-    ];
+  // Find matching real-time order
+  const order = orders.find(o => {
+    const oid = ((o.id || o.orderId || '') + '').toUpperCase();
+    if (!oid) return false;
+    const oNum = oid.replace(/[^0-9]/g, '');
+    return oid === cleanId || 
+           oid === `CP-${cleanId}` ||
+           oid.replace('CP-', '') === withoutPrefix ||
+           (numericOnly && oNum === numericOnly);
+  });
+
+  // If order NOT FOUND: Display clear, real-time message without generating fake mockup data
+  if (!order) {
+    modalContainer.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div>
+          <span class="badge" style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid #ef4444; font-weight:700;">Order Not Found</span>
+          <h3 style="font-size:1.35rem; font-family:var(--font-heading); color:var(--text-primary); margin-top:4px; font-weight:700;">Order #${cleanInput}</h3>
+        </div>
+        <button onclick="window.closeGlobalOrderTracker()" style="background:none; border:none; color:var(--text-muted); font-size:1.3rem; cursor:pointer;" aria-label="Close">✕</button>
+      </div>
+
+      <div style="background:var(--bg-secondary); padding:24px 20px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:20px; text-align:center;">
+        <div style="font-size:2.4rem; margin-bottom:12px;">🔎</div>
+        <h4 style="font-size:1.1rem; color:var(--text-primary); margin-bottom:8px; font-weight:700;">No Real-Time Order Found</h4>
+        <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.6; max-width:440px; margin:0 auto 18px;">
+          We could not find an active order matching <strong>"${cleanInput}"</strong>. Please verify your Order Number from your confirmation message or order history.
+        </p>
+        <a href="https://api.whatsapp.com/send?phone=923403256108&text=${encodeURIComponent(`Hello Chudhary Perfumes, I need help checking the status of my order ${cleanInput}`)}" target="_blank" class="btn btn-outline" style="display:inline-flex; align-items:center; gap:8px; font-size:0.84rem; padding:10px 18px; border-color:#25D366; color:#25D366; text-decoration:none; font-weight:600;">
+          💬 Inquire on WhatsApp (+92 340 3256108)
+        </a>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <button onclick="renderTrackerPrompt('${cleanInput}')" class="btn btn-outline" style="font-size:0.82rem; padding:8px 16px;">← Search Another Order</button>
+        <button onclick="window.closeGlobalOrderTracker()" class="btn btn-primary" style="font-size:0.82rem; padding:8px 16px;">Close</button>
+      </div>
+    `;
+    return;
   }
 
-  const order = orders.find(o => 
-    o.id.toUpperCase() === cleanId || 
-    (o.trackingNo && o.trackingNo.toUpperCase() === cleanId) ||
-    o.id.replace('CP-', '') === cleanId
-  ) || {
-    id: cleanId.startsWith('CP-') ? cleanId : `CP-${cleanId}`,
-    customerName: 'Patron Client',
-    city: 'Pakistan Destination',
-    items: 'Handcrafted Eau de Parfum (EDP)',
-    total: 1990,
-    date: '2026-08-01 18:30',
-    status: 'Dispatched',
-    trackingNo: cleanId.startsWith('PEX-') ? cleanId : `PEX-${Math.floor(10000000 + Math.random()*90000000)}`,
-    courierPartner: 'PostEx Courier'
-  };
+  // Real-time order status tracking
+  const currentStatus = order.status || 'Pending COD';
+  const isDelivered = currentStatus === 'Delivered';
+  const isDispatched = currentStatus === 'Dispatched' || isDelivered;
+  const isProcessing = currentStatus === 'Processing' || currentStatus === 'Payment Verified (SS Attached)' || isDispatched;
 
-  const isDelivered = order.status === 'Delivered';
-  const isDispatched = order.status === 'Dispatched' || isDelivered;
-  const isProcessing = order.status === 'Processing' || isDispatched;
+  let statusBadgeColor = '#f59e0b';
+  let statusText = currentStatus;
+  if (isDelivered) {
+    statusBadgeColor = '#10b981';
+  } else if (isDispatched) {
+    statusBadgeColor = '#38bdf8';
+  } else if (isProcessing) {
+    statusBadgeColor = '#3b82f6';
+  }
 
-  const currentStatusCode = isDelivered ? '0005' : isDispatched ? '0004' : isProcessing ? '0015' : '0001';
-  const statusInfo = POSTEX_STATUS_CODES[currentStatusCode];
+  const itemsText = Array.isArray(order.items)
+    ? order.items.map(i => `${i.name} (x${i.quantity})`).join(', ')
+    : (order.items || 'Chudhary Perfumes Fragrance');
+
+  const orderNum = order.orderId || order.id || cleanInput;
 
   modalContainer.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
       <div>
-        <span class="badge" style="background:transparent; border:1px solid var(--border-gold); color:var(--brand-gold);">PostEx Official Dispatch Registry</span>
-        <h3 style="font-size:1.4rem; font-family:var(--font-heading); color:var(--text-primary); margin-top:4px; font-weight:700;">${order.id}</h3>
+        <span class="badge" style="background:transparent; border:1px solid var(--border-gold); color:var(--brand-gold);">Real-Time Order Status</span>
+        <h3 style="font-size:1.4rem; font-family:var(--font-heading); color:var(--text-primary); margin-top:4px; font-weight:700;">Order #${orderNum}</h3>
       </div>
       <button onclick="window.closeGlobalOrderTracker()" style="background:none; border:none; color:var(--text-muted); font-size:1.3rem; cursor:pointer;" aria-label="Close">✕</button>
     </div>
 
+    <!-- Live Order Details Card -->
     <div style="background:var(--bg-secondary); padding:16px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:20px; font-size:0.85rem; line-height:1.7;">
       <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:8px; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-        <div><strong>Consignment CN:</strong> <span style="font-family:monospace; font-weight:700; color:var(--brand-gold);">${order.trackingNo}</span></div>
-        <div><strong>Status:</strong> <span class="badge" style="background:${statusInfo.color}; color:#fff; font-weight:600;">${statusInfo.name}</span></div>
+        <div><strong>Order Placed:</strong> <span style="color:var(--text-muted);">${order.date || 'Recent'}</span></div>
+        <div><strong>Status:</strong> <span class="badge" style="background:${statusBadgeColor}; color:#fff; font-weight:600;">${statusText}</span></div>
       </div>
-      <div><strong>Client Patron:</strong> ${order.customerName}</div>
-      <div><strong>Destination City:</strong> ${order.city}</div>
-      <div><strong>Olfactory Creations:</strong> ${order.items}</div>
-      <div><strong>Cash on Delivery Total:</strong> <strong style="color:var(--brand-gold);">PKR ${order.total.toLocaleString()}</strong></div>
+      <div><strong>Customer:</strong> ${order.customerName || 'Valued Customer'} ${order.phone ? `(${order.phone})` : ''}</div>
+      <div><strong>Delivery City:</strong> <strong style="color:var(--text-primary);">${order.city || 'Pakistan'}</strong></div>
+      ${order.address ? `<div style="font-size:0.8rem; color:var(--text-muted);"><strong>Address:</strong> ${order.address}</div>` : ''}
+      <div style="margin-top:4px;"><strong>Items:</strong> ${itemsText}</div>
+      <div style="margin-top:4px;"><strong>Total Bill:</strong> <strong style="color:var(--brand-gold); font-size:1rem;">PKR ${parseFloat(order.total || 0).toLocaleString()}</strong> (${order.paymentMethod || 'Cash on Delivery'})</div>
     </div>
 
+    <!-- Real-Time Timeline Progress Stepper -->
     <div style="display:flex; flex-direction:column; gap:18px; position:relative; padding-left:24px; border-left:2px solid var(--border-color); margin-bottom:24px;">
+      
+      <!-- Step 1 -->
       <div style="position:relative;">
         <div style="position:absolute; left:-33px; top:0; width:16px; height:16px; border-radius:50%; background:var(--status-success); border:3px solid var(--bg-card);"></div>
-        <div style="font-weight:700; color:var(--text-primary); font-size:0.88rem;">0001 - Consignment Booking Registered</div>
-        <div style="font-size:0.78rem; color:var(--text-muted);">${order.date} • PostEx API Booking Created & Label Printed</div>
+        <div style="font-weight:700; color:var(--text-primary); font-size:0.88rem;">1. Order Placed & Confirmed</div>
+        <div style="font-size:0.78rem; color:var(--text-muted);">${order.date || 'Just now'} • Order logged in system</div>
       </div>
 
+      <!-- Step 2 -->
       <div style="position:relative;">
         <div style="position:absolute; left:-33px; top:0; width:16px; height:16px; border-radius:50%; background:${isProcessing ? 'var(--status-success)' : 'var(--border-color)'}; border:3px solid var(--bg-card);"></div>
-        <div style="font-weight:700; color:${isProcessing ? 'var(--text-primary)' : 'var(--text-muted)'}; font-size:0.88rem;">0015 - Picked By PostEx Courier Logistics</div>
-        <div style="font-size:0.78rem; color:var(--text-muted);">${isProcessing ? 'Scanned & Picked Up from Atelier Pakistan' : 'Awaiting PostEx courier pickup'}</div>
+        <div style="font-weight:700; color:${isProcessing ? 'var(--text-primary)' : 'var(--text-muted)'}; font-size:0.88rem;">2. Packaging & Quality Inspection</div>
+        <div style="font-size:0.78rem; color:var(--text-muted);">${isProcessing ? 'Fragrance flacons packed, bubble-wrapped & sealed' : 'Awaiting packaging & fulfillment verification'}</div>
       </div>
 
+      <!-- Step 3 -->
       <div style="position:relative;">
         <div style="position:absolute; left:-33px; top:0; width:16px; height:16px; border-radius:50%; background:${isDispatched ? 'var(--status-success)' : 'var(--border-color)'}; border:3px solid var(--bg-card);"></div>
-        <div style="font-weight:700; color:${isDispatched ? 'var(--text-primary)' : 'var(--text-muted)'}; font-size:0.88rem;">0004 - Out For Delivery in ${order.city}</div>
-        <div style="font-size:0.78rem; color:var(--text-muted);">${isDispatched ? `Assigned to regional courier rider in ${order.city}` : 'In transit between PostEx hubs'}</div>
+        <div style="font-weight:700; color:${isDispatched ? 'var(--text-primary)' : 'var(--text-muted)'}; font-size:0.88rem;">3. Dispatched for Delivery</div>
+        <div style="font-size:0.78rem; color:var(--text-muted);">${isDispatched ? `In transit with PostEx Courier to ${order.city || 'your city'}` : 'Handed over to courier service once dispatched'}</div>
       </div>
 
+      <!-- Step 4 -->
       <div style="position:relative;">
         <div style="position:absolute; left:-33px; top:0; width:16px; height:16px; border-radius:50%; background:${isDelivered ? 'var(--status-success)' : 'var(--border-color)'}; border:3px solid var(--bg-card);"></div>
-        <div style="font-weight:700; color:${isDelivered ? 'var(--status-success)' : 'var(--text-muted)'}; font-size:0.88rem;">0005 - Delivered & Remittance Settled</div>
-        <div style="font-size:0.78rem; color:var(--text-muted);">${isDelivered ? 'Successfully delivered to customer doorstep' : `Awaiting delivery confirmation`}</div>
+        <div style="font-weight:700; color:${isDelivered ? 'var(--text-primary)' : 'var(--text-muted)'}; font-size:0.88rem;">4. Delivered to Doorstep</div>
+        <div style="font-size:0.78rem; color:var(--text-muted);">${isDelivered ? 'Delivered successfully' : 'Delivered within 2 to 4 working days'}</div>
       </div>
+
     </div>
 
     <div style="display:flex; justify-content:space-between; align-items:center;">
-      <button onclick="renderTrackerPrompt('${order.id}')" class="btn btn-outline" style="font-size:0.82rem; padding:8px 16px;">Verify Another ID</button>
+      <button onclick="renderTrackerPrompt('${orderNum}')" class="btn btn-outline" style="font-size:0.82rem; padding:8px 16px;">Track Another Order</button>
       <button onclick="window.closeGlobalOrderTracker()" class="btn btn-primary" style="font-size:0.82rem; padding:8px 16px;">Close</button>
     </div>
   `;

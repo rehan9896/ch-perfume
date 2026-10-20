@@ -65,7 +65,11 @@ const DashboardManager = {
 
       return `
         <tr>
-          <td style="font-weight:600; color:var(--accent-gold);">${orderNum}</td>
+          <td>
+            <a href="javascript:void(0)" onclick="window.openGlobalOrderTracker ? window.openGlobalOrderTracker('${orderNum}') : null" style="font-weight:700; color:var(--accent-gold); text-decoration:underline; cursor:pointer;" title="Click to Track Live Order">
+              ${orderNum}
+            </a>
+          </td>
           <td>${o.date}</td>
           <td>${itemsText}</td>
           <td style="font-weight:600;">
@@ -74,6 +78,9 @@ const DashboardManager = {
           </td>
           <td>
             <span class="status-badge ${isDelivered ? 'status-delivered' : 'status-processing'}">${o.status}</span>
+            <button type="button" onclick="window.openGlobalOrderTracker ? window.openGlobalOrderTracker('${orderNum}') : null" class="btn btn-outline" style="margin-top:6px; padding:3px 8px; font-size:0.72rem; border-color:var(--brand-gold); color:var(--brand-gold); display:block; cursor:pointer;">
+              Track Order
+            </button>
             ${hasSS ? `
               <div style="margin-top:4px; font-size:0.72rem; color:#2ecc71; font-weight:700; display:flex; align-items:center; gap:4px;">
                 ✓ SS Attached
