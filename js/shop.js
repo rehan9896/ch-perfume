@@ -332,6 +332,7 @@ const ShopManager = {
           </div>
         </div>
       </div>
+      `;
     }).join('');
 
     if (window.AnimationManager && typeof window.AnimationManager.refresh === 'function') {
