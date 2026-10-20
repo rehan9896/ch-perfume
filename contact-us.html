@@ -241,7 +241,7 @@
         </div>
 
         <form
-          onsubmit="event.preventDefault(); alert('Thank you. Your message has been received by our concierge. We will get back to you shortly.'); this.reset();"
+          onsubmit="event.preventDefault(); if(window.showToast){ window.showToast('Thank you. Your message has been received by our concierge. We will get back to you shortly.', 'success'); } else { alert('Thank you. Your message has been received by our concierge.'); } this.reset();"
           style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
           <div>
             <label

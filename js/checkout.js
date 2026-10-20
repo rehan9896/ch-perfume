@@ -170,7 +170,7 @@ const CheckoutManager = {
     if (!input || !msg) return;
 
     const code = input.value.trim().toUpperCase();
-    if (code === 'SAVE20' || code === 'CHUDHARY20' || code === 'CP20') {
+    if (code === 'SAVE20' || code === 'CHAUDHARY20' || code === 'CHUDHARY20' || code === 'CP20' || code === 'ROYAL20' || code === 'PAKISTAN20') {
       const subtotal = CartManager.getTotal();
       this.appliedDiscount = Math.round(subtotal * 0.20);
       msg.style.display = 'block';
