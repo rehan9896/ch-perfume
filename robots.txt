@@ -1,0 +1,25 @@
+# ==========================================================================
+# CHUDHARY PERFUMES (chudharyperfumes.com) ROBOTS.TXT
+# SEO Optimized Search Engine Crawler Directives
+# ==========================================================================
+
+User-agent: *
+Allow: /
+Allow: /shop
+Allow: /about-us
+Allow: /contact-us
+Allow: /about
+Allow: /contact
+Allow: /checkout
+Allow: /assets/
+
+# Disallow Private & Administrative Portals
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /auth
+Disallow: /admin.html
+Disallow: /dashboard.html
+Disallow: /auth.html
+
+# XML Sitemap Location
+Sitemap: https://chudharyperfumes.com/sitemap.xml

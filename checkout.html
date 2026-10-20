@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en-PK" data-theme="light" data-palette="modern-noir">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Checkout & Dispatch | Chaudhary Parfums Lahore</title>
+  <meta name="description" content="Acquire handcrafted artisanal Eau de Parfum creations with complimentary nationwide insured dispatch. Cash on Delivery and direct settlement supported across Pakistan.">
+  <meta name="robots" content="index, follow">
+
+  <link rel="canonical" href="https://chudharyperfumes.com/checkout">
+  <link rel="alternate" hreflang="en-pk" href="https://chudharyperfumes.com/checkout">
+  <link rel="alternate" hreflang="x-default" href="https://chudharyperfumes.com/checkout">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Chaudhary Parfums">
+  <meta property="og:title" content="Client Checkout & Dispatch | Chaudhary Parfums">
+  <meta property="og:description" content="Complete your acquisition of handcrafted Eau de Parfum creations with complimentary insured delivery across Pakistan.">
+  <meta property="og:url" content="https://chudharyperfumes.com/checkout">
+  <meta property="og:image" content="https://chudharyperfumes.com/assets/images/products/black_crown.png">
+  <meta property="og:locale" content="en_PK">
+
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Client Checkout & Dispatch | Chaudhary Parfums">
+  <meta name="twitter:description" content="Acquire handcrafted Eau de Parfum creations with complimentary nationwide delivery across Pakistan.">
+  <meta name="twitter:image" content="https://chudharyperfumes.com/assets/images/products/black_crown.png">
+
+  <!-- Schema.org Checkout Breadcrumbs Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Maison",
+        "item": "https://chudharyperfumes.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Collection",
+        "item": "https://chudharyperfumes.com/shop"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Client Checkout",
+        "item": "https://chudharyperfumes.com/checkout"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Instant Theme Script (Prevents Refresh Flash) -->
+  <script>
+    (function() {
+      try {
+        if (localStorage.getItem('cp_theme_v3') !== 'true') {
+          localStorage.setItem('cp_palette_pref', 'modern-noir');
+          localStorage.setItem('cp_theme_pref', 'light');
+          localStorage.setItem('cp_theme_v3', 'true');
+        }
+        var p = localStorage.getItem('cp_palette_pref') || 'modern-noir';
+        var t = localStorage.getItem('cp_theme_pref') || 'light';
+        document.documentElement.setAttribute('data-palette', p);
+        document.documentElement.setAttribute('data-theme', t);
+      } catch(e) {}
+    })();
+  </script>
+
+  <!-- Google Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css?v=2.0">
+  <link rel="stylesheet" href="css/themes.css?v=2.0">
+  <link rel="stylesheet" href="css/animations.css?v=2.0">
+  <link rel="stylesheet" href="css/responsive.css?v=2.0">
+
+  <style>
+    /* Handcrafted Atelier Checkout Layout */
+    .checkout-wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 50px 24px;
+    }
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 36px;
+      align-items: start;
+    }
+    @media (max-width: 868px) {
+      .checkout-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      .checkout-wrap {
+        padding: 24px 16px;
+      }
+    }
+    .checkout-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 34px;
+      box-shadow: var(--shadow-sm);
+    }
+    @media (max-width: 576px) {
+      .checkout-card {
+        padding: 22px;
+      }
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .form-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.92rem;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .form-input:focus {
+      border-color: var(--brand-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+    }
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 576px) {
+      .form-row-2 {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+    }
+    .pm-card {
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      padding: 18px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .pm-card.active {
+      border-color: var(--brand-gold);
+      background: rgba(212, 175, 55, 0.06);
+    }
+    .pm-card strong {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .btn-checkout-submit {
+      width: 100%;
+      padding: 16px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      background: var(--brand-gold);
+      color: var(--btn-primary-text);
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    .btn-checkout-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    Complimentary Express Shipping Across Pakistan &nbsp;•&nbsp; Cash on Delivery Available &nbsp;•&nbsp; <strong>Verified PostEx Dispatch</strong>
+  </div>
+
+  <!-- Haute Parfumerie Split-Wing Header Navbar -->
+  <header class="header">
+    <div class="container navbar">
+      <!-- Left Wing: Return to Archive -->
+      <div class="nav-wing-left">
+        <a href="shop.html" class="btn btn-outline" style="padding: 8px 18px; font-weight: 600; font-size: 0.82rem; letter-spacing: 0.5px; border-radius: 20px;">← Back to Archive</a>
+      </div>
+
+      <!-- Center Wing: Crowned Royal Insignia Logo -->
+      <div class="nav-center-wing">
+        <a href="index.html" class="logo">
+          <div class="logo-seal-wrap">
+            <svg class="logo-crown-svg" viewBox="0 0 24 16" fill="currentColor" aria-hidden="true">
+              <path d="M2 14h20v2H2v-2zm1.5-3l3.2-6.5 5.3 4.5 5.3-4.5 3.2 6.5H3.5z"/>
+              <circle cx="2" cy="6" r="1.5"/>
+              <circle cx="6.7" cy="4" r="1.5"/>
+              <circle cx="12" cy="2" r="1.8"/>
+              <circle cx="17.3" cy="4" r="1.5"/>
+              <circle cx="22" cy="6" r="1.5"/>
+            </svg>
+            <span class="logo-mark">C</span>
+          </div>
+          <div class="logo-text-group">
+            <span class="logo-brand">CHAUDHARY</span>
+            <span class="logo-sub">PARFUMS • LAHORE</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Right Wing: Atelier Actions -->
+      <div class="nav-actions nav-wing-right">
+        <button class="btn-icon theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <button class="mobile-menu-btn" id="mobile-menu-toggler" aria-label="Toggle Navigation">
+          <span class="toggler-bars" aria-hidden="true">
+            <span class="bar bar-1"></span>
+            <span class="bar bar-2"></span>
+            <span class="bar bar-3"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Clean Checkout Main Container -->
+  <main class="checkout-wrap">
+    
+    <!-- Title Header -->
+    <div style="text-align: center; margin-bottom: 36px; padding: 42px 24px 30px 24px; background: radial-gradient(circle at 50% 20%, rgba(212, 160, 23, 0.12) 0%, rgba(212, 160, 23, 0.03) 50%, transparent 80%); border-radius: var(--radius-lg); border: 1px solid var(--border-gold); position: relative; overflow: hidden;">
+      <div style="position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 260px; height: 100px; background: var(--brand-gold); filter: blur(70px); opacity: 0.18; pointer-events: none;"></div>
+      <span class="badge" style="background: rgba(212, 160, 23, 0.08); border: 1px solid var(--border-gold); color: var(--brand-gold); margin-bottom: 12px; box-shadow: 0 4px 16px var(--brand-gold-glow); letter-spacing: 2px;">✦ ATELIER DISPATCH DOCKET ✦</span>
+      <h1 style="font-family: var(--font-heading); font-size: 2.3rem; font-weight: 700; color: var(--text-primary); letter-spacing: 0.5px; margin-bottom: 8px;">
+        Order <span>Acquisition</span>
+      </h1>
+      <p style="font-size: 0.92rem; color: var(--text-secondary); max-width: 580px; margin: 0 auto; line-height: 1.6;">Provide destination details below. Your dispatch docket is verified instantly with our Lahore atelier for nationwide express dispatch.</p>
+    </div>
+
+    <div class="checkout-grid">
+
+      <!-- Left Column: Delivery Form -->
+      <div class="checkout-card">
+        <h2 style="font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px;">
+          Patron & Delivery Information
+        </h2>
+
+        <form id="checkout-main-form" onsubmit="CheckoutManager.handleFormSubmit(event)">
+          
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="chk-name">Full Name *</label>
+              <input type="text" id="chk-name" class="form-input" placeholder="e.g. Muhammad Ali" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="chk-phone">WhatsApp Contact *</label>
+              <input type="tel" id="chk-phone" class="form-input" placeholder="e.g. 03001234567" required>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group" style="position: relative;">
+              <label class="form-label" for="chk-city-search">City of Residence *</label>
+              
+              <input type="hidden" id="chk-city" value="Lahore" required>
+
+              <div id="city-selector-box" onclick="CheckoutManager.toggleCityDropdown(event)" class="form-input" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;">
+                <span id="city-selected-text" style="font-weight: 600;">Lahore</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+
+              <div id="city-dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: 280px; background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 8px; z-index: 999; box-shadow: var(--shadow-lg); overflow: hidden; margin-top: 4px;">
+                <div style="padding: 10px; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color);">
+                  <input type="text" id="city-search-input" onkeyup="CheckoutManager.filterCities(this.value)" placeholder="Search city (e.g. Lahore, Karachi, Islamabad)..." style="width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 0.85rem; outline: none;">
+                </div>
+                <div id="city-options-list" style="max-height: 210px; overflow-y: auto; padding: 4px 0;">
+                  <!-- Options rendered by JS -->
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="chk-email">Email Address (Optional)</label>
+              <input type="email" id="chk-email" class="form-input" placeholder="e.g. patron@domain.com">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="chk-address">Complete Shipping Address *</label>
+            <textarea id="chk-address" class="form-input" rows="3" placeholder="e.g. House 14, Street 8, Phase 5 DHA, Lahore" required style="resize: vertical;"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="chk-notes">Atelier Dispatch Notes (Optional)</label>
+            <input type="text" id="chk-notes" class="form-input" placeholder="e.g. Fragile maceration packaging / Call prior to delivery">
+          </div>
+
+          <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+            <label class="form-label" style="margin-bottom: 12px; display: block;">Settlement Method *</label>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;" class="checkout-pm-grid">
+              <label class="pm-card active">
+                <input type="radio" name="chk-payment" value="Cash on Delivery" checked onchange="CheckoutManager.selectPaymentMethod(this)" style="display: none;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-gold); margin-bottom:4px;"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+                <strong>Cash on Delivery</strong>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">PostEx COD</span>
+              </label>
+
+              <label class="pm-card">
+                <input type="radio" name="chk-payment" value="EasyPaisa" onchange="CheckoutManager.selectPaymentMethod(this)" style="display: none;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-gold); margin-bottom:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                <strong>EasyPaisa</strong>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">Direct Transfer</span>
+              </label>
+
+              <label class="pm-card">
+                <input type="radio" name="chk-payment" value="JazzCash" onchange="CheckoutManager.selectPaymentMethod(this)" style="display: none;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-gold); margin-bottom:4px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                <strong>JazzCash</strong>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">Direct Transfer</span>
+              </label>
+            </div>
+
+            <!-- Account Info Box -->
+            <div id="chk-pm-info-box" style="display: none; margin-top: 14px; background: var(--bg-secondary); border: 1px solid var(--border-gold); padding: 14px; border-radius: 8px;">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-checkout-submit" style="margin-top: 26px;">
+            Confirm Dispatch Docket via WhatsApp
+          </button>
+
+          <div style="font-size: 0.76rem; color: var(--text-muted); text-align: center; margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span>Confidential Encrypted Submission &bull; Insured PostEx Courier Transit</span>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Right Column: Order Summary Card -->
+      <div class="checkout-card" style="position: sticky; top: 100px;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px;">
+          Acquisition Summary
+        </h3>
+
+        <!-- Items Container -->
+        <div id="chk-items-list" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; max-height: 280px; overflow-y: auto; padding-right: 4px;">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Promo Code Input -->
+        <div style="display: flex; gap: 8px; margin-bottom: 18px;">
+          <input type="text" id="chk-coupon-input" placeholder="Promotional Code" class="form-input" style="padding: 10px 14px; font-size: 0.82rem; text-transform: uppercase;">
+          <button type="button" onclick="CheckoutManager.applyCoupon()" class="btn btn-outline" style="padding: 10px 18px; font-weight: 700; font-size: 0.8rem;">Apply</button>
+        </div>
+        <div id="chk-coupon-msg" style="display: none; font-size: 0.78rem; font-weight: 600; margin-top: -10px; margin-bottom: 16px;"></div>
+
+        <!-- Pricing Totals -->
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.88rem; padding-top: 16px; border-top: 1px solid var(--border-color);">
+          <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+            <span>Creations Subtotal:</span>
+            <span id="chk-subtotal-val" style="font-weight: 700; color: var(--text-primary);">PKR 0</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+            <span>Courier Transit:</span>
+            <span style="font-weight: 700; color: var(--status-success);">Complimentary Express</span>
+          </div>
+
+          <div id="chk-discount-row" style="display: none; justify-content: space-between; color: var(--status-success); font-weight: 700;">
+            <span>Privilege Discount:</span>
+            <span id="chk-discount-val">-PKR 0</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+            <span>Total Payable:</span>
+            <span id="chk-total-val" style="color: var(--brand-gold);">PKR 0</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px; padding: 14px; background: var(--bg-secondary); border-radius: 8px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; border: 1px solid var(--border-color);">
+          <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">PostEx Insured Tracking</div>
+          Each parcel is assigned a unique courier identifier (PEX-XXXX) communicated via SMS upon dispatch.
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Luxury Atelier Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <!-- Column 1: Brand & Craft -->
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <span class="logo-mark">C</span>
+          <div class="logo-text-group">
+            <span class="logo-brand">CHAUDHARY</span>
+            <span class="logo-sub">PARFUMS • LAHORE</span>
+          </div>
+        </a>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.7; margin-top: 16px;">
+          Artisanal Eau de Parfum handcrafted in Lahore, Pakistan. Formulated with authentic French fragrance essences, unhurried maceration cycles, and nationwide insured dispatch.
+        </p>
+      </div>
+
+      <!-- Column 2: Olfactory Edits -->
+      <div>
+        <h4 class="footer-heading">Olfactory Edits</h4>
+        <ul class="footer-links">
+          <li><a href="shop.html?cat=Men">Masculine Line</a></li>
+          <li><a href="shop.html?cat=Women">Feminine Line</a></li>
+          <li><a href="shop.html?cat=Unisex">Genderless Scent</a></li>
+          <li><a href="shop.html">Complete Archive</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Maison -->
+      <div>
+        <h4 class="footer-heading">Maison</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about-us.html">Heritage & Craft</a></li>
+          <li><a href="contact-us.html">Client Concierge</a></li>
+          <li><a href="dashboard.html">Patron Account</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Client Concierge -->
+      <div>
+        <h4 class="footer-heading">Direct Concierge</h4>
+        <ul class="footer-links">
+          <li><a href="https://api.whatsapp.com/send?phone=923403256108" target="_blank">WhatsApp: +92 340 3256108</a></li>
+          <li><a href="mailto:Chudharyperfumes1@gmail.com">Chudharyperfumes1@gmail.com</a></li>
+          <li><a href="contact-us.html">Lahore Atelier Support</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer Bottom Bar -->
+    <div class="container footer-bottom" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>&copy; 2026 <strong>Chaudhary Parfums</strong>. Handcrafted in Pakistan. All Rights Reserved.</div>
+      <div style="display:flex; gap:16px; font-size:0.8rem; color:var(--text-secondary); flex-wrap:wrap;">
+        <span>Cash on Delivery</span>
+        <span>&bull;</span>
+        <span>Raast &bull; Bank Transfer &bull; JazzCash</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core Scripts -->
+  <script src="js/theme.js?v=2.0"></script>
+  <script src="js/script.js?v=2.0"></script>
+  <script src="js/shop.js?v=2.0"></script>
+  <script src="js/cart.js?v=2.0"></script>
+  <script src="js/checkout.js?v=2.0"></script>
+</body>
+</html>
