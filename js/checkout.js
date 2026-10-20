@@ -6,6 +6,8 @@
 const CheckoutManager = {
   appliedDiscount: 0,
   currentPaymentMethod: 'Cash on Delivery',
+  attachedSS: null,
+  ssFileName: null,
 
   cities: [
     'Lahore', 'Karachi', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan', 'Peshawar', 'Sialkot',
@@ -98,36 +100,66 @@ const CheckoutManager = {
     });
   },
 
+  toggleMobileSummary() {
+    const content = document.getElementById('chk-mobile-summary-content');
+    const arrow = document.getElementById('chk-mobile-summary-arrow');
+    if (!content) return;
+    const isHidden = content.style.display === 'none' || !content.style.display;
+    content.style.display = isHidden ? 'block' : 'none';
+    if (arrow) {
+      arrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+  },
+
   renderCheckoutItems() {
     const listEl = document.getElementById('chk-items-list');
-    if (!listEl) return;
+    const mobileListEl = document.getElementById('chk-mobile-items-list');
+    const countBadge = document.getElementById('chk-item-count');
+    const mobileCountBadge = document.getElementById('chk-mobile-summary-count');
 
     const items = CartManager.getItems();
+    const totalCount = items.reduce((sum, i) => sum + (i.quantity || 1), 0);
+
+    if (countBadge) countBadge.textContent = `${totalCount} ${totalCount === 1 ? 'Flacon' : 'Flacons'}`;
+    if (mobileCountBadge) mobileCountBadge.textContent = `${totalCount} ${totalCount === 1 ? 'Flacon' : 'Flacons'}`;
+
+    if (!listEl) return;
+
     if (items.length === 0) {
-      listEl.innerHTML = `
-        <div style="text-align:center; padding:36px 12px; color:var(--text-muted);">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px; opacity:0.6;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-          <p style="font-size:0.9rem; font-weight:600; color:var(--text-primary);">Your shopping bag is empty</p>
-          <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Select creations from our archive to proceed.</p>
-          <a href="shop.html" class="btn btn-outline" style="margin-top:16px; font-size:0.8rem; padding:8px 18px;">Explore Archive</a>
+      const emptyHtml = `
+        <div style="text-align:center; padding:36px 16px; color:var(--text-muted);">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px; color:var(--brand-gold);"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <div style="font-size:0.95rem; font-weight:700; color:var(--text-primary); font-family:var(--font-heading);">Your Shopping Bag is Empty</div>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Acquire handcrafted formulations from our atelier archive.</p>
+          <a href="shop.html" class="btn btn-outline" style="margin-top:16px; font-size:0.8rem; padding:8px 20px; border-color:var(--brand-gold); color:var(--brand-gold);">Explore Archive →</a>
         </div>
       `;
+      listEl.innerHTML = emptyHtml;
+      if (mobileListEl) mobileListEl.innerHTML = emptyHtml;
       this.updateTotals(0);
       return;
     }
 
-    listEl.innerHTML = items.map(item => `
-      <div style="display:flex; gap:14px; align-items:center; padding-bottom:14px; border-bottom:1px solid var(--border-color);">
-        <img src="${item.image}" alt="${item.name}" style="width:54px; height:54px; object-fit:cover; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-secondary);">
-        <div style="flex:1;">
-          <div style="font-weight:700; font-size:0.9rem; color:var(--text-primary); font-family:var(--font-heading);">${item.name}</div>
-          <div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px;">50ml EDP &bull; Qty: ${item.quantity} &times; PKR ${item.price.toLocaleString()}</div>
+    const itemCardsHtml = items.map(item => `
+      <div class="summary-item-card">
+        <img src="${item.image}" alt="${item.name}" class="summary-item-thumb">
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:700; font-size:0.88rem; color:var(--text-primary); font-family:var(--font-heading); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+            ${item.name}
+          </div>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px; display:flex; align-items:center; gap:6px;">
+            <span style="border:1px solid var(--border-color); padding:1px 6px; border-radius:3px; font-size:0.7rem; font-weight:600; color:var(--text-secondary);">50ml EDP</span>
+            <span>Qty: <strong style="color:var(--text-primary);">${item.quantity}</strong></span>
+          </div>
         </div>
-        <div style="font-weight:700; font-size:0.9rem; color:var(--brand-gold);">
+        <div style="font-weight:800; font-size:0.92rem; color:var(--brand-gold); white-space:nowrap;">
           PKR ${(item.price * item.quantity).toLocaleString()}
         </div>
       </div>
     `).join('');
+
+    listEl.innerHTML = itemCardsHtml;
+    if (mobileListEl) mobileListEl.innerHTML = itemCardsHtml;
 
     this.updateTotals(CartManager.getTotal());
   },
@@ -155,6 +187,7 @@ const CheckoutManager = {
   updateTotals(subtotal) {
     const subtotalEl = document.getElementById('chk-subtotal-val');
     const totalEl = document.getElementById('chk-total-val');
+    const mobileTotalEl = document.getElementById('chk-mobile-summary-total');
     const discRow = document.getElementById('chk-discount-row');
     const discVal = document.getElementById('chk-discount-val');
 
@@ -162,6 +195,7 @@ const CheckoutManager = {
 
     const finalTotal = Math.max(0, subtotal - this.appliedDiscount);
     if (totalEl) totalEl.textContent = `PKR ${finalTotal.toLocaleString()}`;
+    if (mobileTotalEl) mobileTotalEl.textContent = `PKR ${finalTotal.toLocaleString()}`;
 
     if (discRow && discVal) {
       if (this.appliedDiscount > 0) {
@@ -173,42 +207,228 @@ const CheckoutManager = {
     }
   },
 
+  copyAccountNumber(accNo, btnEl) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(accNo).then(() => {
+        const orig = btnEl.innerHTML;
+        btnEl.innerHTML = '✓ Copied!';
+        btnEl.style.color = '#2ecc71';
+        btnEl.style.borderColor = '#2ecc71';
+        if (window.showToast) window.showToast(`Account number ${accNo} copied to clipboard!`, 'success');
+        setTimeout(() => {
+          btnEl.innerHTML = orig;
+          btnEl.style.color = '';
+          btnEl.style.borderColor = '';
+        }, 2200);
+      }).catch(() => {
+        if (window.showToast) window.showToast(`Account: ${accNo}`, 'info');
+      });
+    } else {
+      if (window.showToast) window.showToast(`Account: ${accNo}`, 'info');
+    }
+  },
+
+  handleSSUpload(inputEl) {
+    const file = inputEl.files && inputEl.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      if (window.showToast) window.showToast('Please upload a valid image file (PNG, JPG, WebP)', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const rawData = e.target.result;
+      const img = new Image();
+      img.onload = () => {
+        // Compress & scale to max 900px so it fits reliably in localStorage
+        const maxDim = 900;
+        let w = img.width;
+        let h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const compressedData = canvas.toDataURL('image/jpeg', 0.78);
+
+        CheckoutManager.attachedSS = compressedData;
+        CheckoutManager.ssFileName = file.name || 'payment-ss.jpg';
+
+        const previewContainer = document.getElementById('ss-preview-container');
+        const previewImg = document.getElementById('ss-preview-img');
+        const previewName = document.getElementById('ss-preview-filename');
+        const uploadZone = document.getElementById('ss-upload-zone');
+
+        if (previewContainer && previewImg && previewName) {
+          previewImg.src = compressedData;
+          previewName.textContent = file.name || 'payment-screenshot.jpg';
+          previewContainer.classList.add('active');
+          if (uploadZone) uploadZone.style.display = 'none';
+        }
+
+        if (window.showToast) window.showToast('Payment screenshot attached successfully!', 'success');
+      };
+      img.src = rawData;
+    };
+    reader.readAsDataURL(file);
+  },
+
+  removeSS() {
+    this.attachedSS = null;
+    this.ssFileName = null;
+    const fileInput = document.getElementById('chk-payment-ss');
+    if (fileInput) fileInput.value = '';
+
+    const previewContainer = document.getElementById('ss-preview-container');
+    const uploadZone = document.getElementById('ss-upload-zone');
+
+    if (previewContainer) previewContainer.classList.remove('active');
+    if (uploadZone) uploadZone.style.display = 'block';
+
+    if (window.showToast) window.showToast('Screenshot removed', 'info');
+  },
+
+  previewFullSS() {
+    if (!this.attachedSS) return;
+    let modal = document.getElementById('ss-fullview-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'ss-fullview-modal';
+      modal.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px;';
+      modal.onclick = (e) => {
+        if (e.target === modal || e.target.classList.contains('ss-modal-close')) modal.style.display = 'none';
+      };
+      document.body.appendChild(modal);
+    }
+    modal.innerHTML = `
+      <div style="position:relative; max-width:90vw; max-height:90vh; background:var(--bg-card); border:1px solid var(--border-gold); border-radius:12px; padding:16px; box-shadow:0 12px 40px rgba(0,0,0,0.6); display:flex; flex-direction:column; align-items:center;">
+        <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--border-color);">
+          <strong style="color:var(--brand-gold); font-size:0.9rem;">Attached Payment Proof (SS)</strong>
+          <button type="button" class="ss-modal-close" style="background:none; border:none; color:var(--text-primary); font-size:1.4rem; cursor:pointer; line-height:1;">&times;</button>
+        </div>
+        <img src="${this.attachedSS}" alt="Payment Screenshot Full" style="max-width:100%; max-height:75vh; object-fit:contain; border-radius:6px;">
+      </div>
+    `;
+    modal.style.display = 'flex';
+  },
+
   selectPaymentMethod(radioEl) {
     document.querySelectorAll('.pm-card').forEach(card => {
-      card.style.borderColor = 'var(--border-color)';
-      card.style.background = 'var(--bg-secondary)';
       card.classList.remove('active');
+      card.style.borderColor = '';
+      card.style.background = '';
     });
 
     const label = radioEl.closest('.pm-card');
     if (label) {
+      label.classList.add('active');
       label.style.borderColor = 'var(--brand-gold)';
       label.style.background = 'rgba(212,175,55,0.06)';
-      label.classList.add('active');
     }
 
     this.currentPaymentMethod = radioEl.value;
     const infoBox = document.getElementById('chk-pm-info-box');
     if (!infoBox) return;
 
-    if (radioEl.value === 'EasyPaisa') {
+    if (radioEl.value === 'EasyPaisa' || radioEl.value === 'JazzCash') {
+      const isJazz = radioEl.value === 'JazzCash';
+      const titleName = isJazz ? 'Shazia Ishaq' : 'Atiqa Tayyab';
+      const brandColor = isJazz ? '#D32F2F' : '#00A651';
+      const brandLabel = isJazz ? 'JazzCash Official Account' : 'EasyPaisa Official Account';
+      const totalAmt = Math.max(0, CartManager.getTotal() - this.appliedDiscount);
+
       infoBox.style.display = 'block';
       infoBox.innerHTML = `
-        <div style="font-size:0.85rem; line-height:1.7;">
-          <div style="font-weight:700; color:var(--brand-gold); margin-bottom:4px;">EasyPaisa Atelier Account</div>
-          <div>Account Title: <strong>Atiqa Tayyab</strong></div>
-          <div>Account Number: <strong>03403256108</strong></div>
-          <div style="font-size:0.76rem; color:var(--text-muted); margin-top:6px;">Please submit payment confirmation snapshot to our WhatsApp concierge after placing order.</div>
-        </div>
-      `;
-    } else if (radioEl.value === 'JazzCash') {
-      infoBox.style.display = 'block';
-      infoBox.innerHTML = `
-        <div style="font-size:0.85rem; line-height:1.7;">
-          <div style="font-weight:700; color:var(--brand-gold); margin-bottom:4px;">JazzCash Atelier Account</div>
-          <div>Account Title: <strong>Shazia Ishaq</strong></div>
-          <div>Account Number: <strong>03403256108</strong></div>
-          <div style="font-size:0.76rem; color:var(--text-muted); margin-top:6px;">Please submit payment confirmation snapshot to our WhatsApp concierge after placing order.</div>
+        <div style="font-size:0.85rem; line-height:1.6;">
+          <!-- Top Header -->
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border-color);">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${brandColor}; box-shadow:0 0 8px ${brandColor};"></span>
+              <strong style="color:var(--text-primary); font-size:0.95rem;">${brandLabel}</strong>
+            </div>
+            <span class="badge" style="background:rgba(212,175,55,0.12); color:var(--brand-gold); border:1px solid var(--border-gold); font-size:0.72rem; font-weight:700;">
+              Instant Verification
+            </span>
+          </div>
+
+          <!-- Account Credentials Card -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; background:var(--bg-card); padding:12px 14px; border-radius:8px; border:1px solid var(--border-color);">
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Account Title</div>
+              <div style="font-size:0.92rem; font-weight:800; color:var(--text-primary); margin-top:3px;">
+                ${titleName}
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Account Number</div>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:3px;">
+                <span style="font-size:0.96rem; font-weight:800; color:var(--brand-gold); letter-spacing:0.5px;">03403256108</span>
+                <button type="button" onclick="CheckoutManager.copyAccountNumber('03403256108', this)" style="padding:2px 8px; font-size:0.7rem; font-weight:700; border-radius:4px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); cursor:pointer; transition:all 0.2s;" title="Copy account number">
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Transfer Guide -->
+          <div style="font-size:0.78rem; color:var(--text-secondary); margin-bottom:12px; background:rgba(212,160,23,0.06); padding:8px 12px; border-radius:6px; border-left:3px solid var(--brand-gold);">
+            Transfer exact order total <strong>PKR ${totalAmt.toLocaleString()}</strong> to the mobile account above, then attach your transfer screenshot (SS) below.
+          </div>
+
+          <!-- Optional TID / Reference Input -->
+          <div style="margin-bottom:12px;">
+            <label class="form-label-lux" style="margin-bottom:6px;">
+              Transaction ID / Sender Name (Optional)
+            </label>
+            <input type="text" id="chk-trx-id" class="form-input-lux" placeholder="e.g. 10-digit TID (e.g. 9840218902) or Sender Mobile #" style="padding:10px 14px; font-size:0.86rem;">
+          </div>
+
+          <!-- Screenshot (SS) Upload Dropzone -->
+          <div>
+            <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-primary); margin-bottom:4px;">
+              Attach Payment Screenshot (SS):
+            </label>
+
+            <div class="ss-upload-zone" id="ss-upload-zone" onclick="document.getElementById('chk-payment-ss').click()" style="${this.attachedSS ? 'display:none;' : 'display:block;'}">
+              <input type="file" id="chk-payment-ss" accept="image/*" style="display:none;" onchange="CheckoutManager.handleSSUpload(this)">
+              <div class="ss-upload-label">
+                <svg class="ss-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <span class="ss-upload-title">Tap to Upload Payment Screenshot (SS)</span>
+                <span class="ss-upload-sub">Select image from gallery or camera &bull; PNG, JPG, WebP</span>
+              </div>
+            </div>
+
+            <!-- Preview Card -->
+            <div class="ss-preview-container ${this.attachedSS ? 'active' : ''}" id="ss-preview-container">
+              <img id="ss-preview-img" src="${this.attachedSS || ''}" alt="Payment Screenshot Preview" class="ss-preview-thumb" onclick="CheckoutManager.previewFullSS()">
+              <div class="ss-preview-info">
+                <div class="ss-preview-name" id="ss-preview-filename">${this.ssFileName || 'payment-screenshot.jpg'}</div>
+                <div class="ss-preview-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Screenshot Attached &bull; Ready for Verification
+                </div>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="ss-remove-btn" onclick="CheckoutManager.removeSS()">Remove</button>
+              </div>
+            </div>
+          </div>
         </div>
       `;
     } else {
@@ -232,6 +452,7 @@ const CheckoutManager = {
     const address = document.getElementById('chk-address')?.value.trim() || '';
     const notes = document.getElementById('chk-notes')?.value.trim() || '';
     const pm = this.currentPaymentMethod;
+    const trxId = document.getElementById('chk-trx-id')?.value.trim() || '';
 
     const subtotal = CartManager.getTotal();
     const finalTotal = Math.max(0, subtotal - this.appliedDiscount);
@@ -243,7 +464,7 @@ const CheckoutManager = {
 
     const itemsSummary = items.map(i => `${i.name} (50ml EDP) × ${i.quantity}`).join(', ');
 
-    // 1. Create New Order Object for Live Admin Dashboard
+    // 1. Create New Order Object with Payment Screenshot Details
     const newOrder = {
       id: orderId,
       orderId: orderId,
@@ -256,8 +477,13 @@ const CheckoutManager = {
       items: itemsSummary,
       total: finalTotal,
       paymentMethod: pm,
+      paymentTitle: pm === 'EasyPaisa' ? 'Atiqa Tayyab' : (pm === 'JazzCash' ? 'Shazia Ishaq' : 'Cash on Delivery'),
+      trxId: trxId,
+      paymentProof: this.attachedSS || '',
+      ssFileName: this.ssFileName || '',
+      hasScreenshot: !!this.attachedSS,
       date: dateStr,
-      status: 'Pending COD',
+      status: (pm === 'Cash on Delivery') ? 'Pending COD' : (this.attachedSS ? 'Payment Verified (SS Attached)' : 'Awaiting Payment SS'),
       trackingNo: trackingNo,
       courierPartner: 'PostEx Courier'
     };
@@ -294,8 +520,14 @@ const CheckoutManager = {
     const notesNotice = notes ? `\nSpecial Instructions: ${notes}` : '';
 
     let pmDetails = pm;
-    if (pm === 'EasyPaisa') pmDetails += ' (Atiqa Tayyab)';
-    if (pm === 'JazzCash') pmDetails += ' (Shazia Ishaq)';
+    if (pm === 'EasyPaisa') pmDetails += ' (Atiqa Tayyab - 03403256108)';
+    if (pm === 'JazzCash') pmDetails += ' (Shazia Ishaq - 03403256108)';
+    if (trxId) pmDetails += `\nTRX ID / Ref: ${trxId}`;
+    if (this.attachedSS) {
+      pmDetails += `\n📸 Payment Proof (SS): Attached with Order Docket ✓ (Saved to Store)`;
+    } else if (pm !== 'Cash on Delivery') {
+      pmDetails += `\n📸 Payment Proof (SS): Sending screenshot in this WhatsApp chat`;
+    }
 
     const waMessage = 
 `CHAUDHARY PARFUMS • ORDER ACQUISITION
@@ -318,8 +550,10 @@ Kindly confirm dispatch docket. Thank you.`;
 
     const waUrl = `https://api.whatsapp.com/send?phone=923403256108&text=${encodeURIComponent(waMessage)}`;
 
-    // 6. Clear Cart
+    // 6. Clear Cart & Reset SS state
     CartManager.clearCart();
+    this.attachedSS = null;
+    this.ssFileName = null;
 
     if (window.showToast) {
       window.showToast(`Order ${orderId} Submitted! Connecting to WhatsApp Concierge...`, 'success');

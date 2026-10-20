@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Checkout & Dispatch | Chaudhary Parfums Lahore</title>
-  <meta name="description" content="Acquire handcrafted artisanal Eau de Parfum creations with complimentary nationwide insured dispatch. Cash on Delivery and direct settlement supported across Pakistan.">
+  <title>Client Acquisition & Insured Dispatch | Chaudhary Parfums Lahore</title>
+  <meta name="description" content="Acquire handcrafted artisanal Eau de Parfum creations with complimentary nationwide insured dispatch. Cash on Delivery, EasyPaisa, and JazzCash supported across Pakistan.">
   <meta name="robots" content="index, follow">
 
   <link rel="canonical" href="https://chudharyperfumes.com/checkout">
@@ -13,7 +13,7 @@
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Chaudhary Parfums">
-  <meta property="og:title" content="Client Checkout & Dispatch | Chaudhary Parfums">
+  <meta property="og:title" content="Client Acquisition & Dispatch | Chaudhary Parfums">
   <meta property="og:description" content="Complete your acquisition of handcrafted Eau de Parfum creations with complimentary insured delivery across Pakistan.">
   <meta property="og:url" content="https://chudharyperfumes.com/checkout">
   <meta property="og:image" content="https://chudharyperfumes.com/assets/images/products/black_crown.png">
@@ -21,7 +21,7 @@
 
   <!-- Twitter Card Tags -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Client Checkout & Dispatch | Chaudhary Parfums">
+  <meta name="twitter:title" content="Client Acquisition & Dispatch | Chaudhary Parfums">
   <meta name="twitter:description" content="Acquire handcrafted Eau de Parfum creations with complimentary nationwide delivery across Pakistan.">
   <meta name="twitter:image" content="https://chudharyperfumes.com/assets/images/products/black_crown.png">
 
@@ -46,7 +46,7 @@
       {
         "@type": "ListItem",
         "position": 3,
-        "name": "Client Checkout",
+        "name": "Client Acquisition",
         "item": "https://chudharyperfumes.com/checkout"
       }
     ]
@@ -73,7 +73,7 @@
   <!-- Google Fonts Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="css/style.css?v=2.0">
   <link rel="stylesheet" href="css/themes.css?v=2.0">
@@ -81,118 +81,598 @@
   <link rel="stylesheet" href="css/responsive.css?v=2.0">
 
   <style>
-    /* Handcrafted Atelier Checkout Layout */
-    .checkout-wrap {
-      max-width: 1040px;
+    /* ==========================================================================
+       CHAUDHARY PARFUMS - HAUTE PARFUMERIE CLIENT ACQUISITION SUITE
+       ========================================================================== */
+
+    .checkout-page-wrap {
+      max-width: 1140px;
       margin: 0 auto;
-      padding: 50px 24px;
+      padding: 34px 20px 80px 20px;
     }
-    .checkout-grid {
-      display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 36px;
-      align-items: start;
+
+    /* 3-Step Atelier Stepper Bar */
+    .atelier-stepper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 580px;
+      margin: 0 auto 32px auto;
+      position: relative;
+      padding: 0 10px;
+    }
+    .stepper-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 2;
+      text-decoration: none;
+    }
+    .stepper-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      transition: all 0.3s ease;
+    }
+    .stepper-item.completed .stepper-circle {
+      background: var(--brand-gold);
+      color: var(--btn-primary-text);
+      box-shadow: 0 0 12px var(--brand-gold-glow);
+    }
+    .stepper-item.active .stepper-circle {
+      background: var(--bg-card);
+      border: 2px solid var(--brand-gold);
+      color: var(--brand-gold);
+      box-shadow: 0 0 14px var(--brand-gold-glow);
+    }
+    .stepper-item.upcoming .stepper-circle {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .stepper-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .stepper-item.active .stepper-label {
+      color: var(--text-primary);
+    }
+    .stepper-item.completed .stepper-label {
+      color: var(--brand-gold);
+    }
+    .stepper-line {
+      flex: 1;
+      height: 2px;
+      background: var(--border-color);
+      margin: 0 14px;
+    }
+    .stepper-line.filled {
+      background: linear-gradient(90deg, var(--brand-gold), rgba(212, 175, 55, 0.4));
+    }
+
+    /* Editorial Hero Banner */
+    .checkout-hero-banner {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 34px 24px 26px 24px;
+      background: radial-gradient(circle at 50% 15%, rgba(212, 160, 23, 0.12) 0%, rgba(212, 160, 23, 0.02) 65%, transparent 85%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-gold);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 30px -12px rgba(0, 0, 0, 0.08);
+    }
+    .checkout-hero-banner::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 100px;
+      background: var(--brand-gold);
+      filter: blur(75px);
+      opacity: 0.16;
+      pointer-events: none;
+    }
+    .checkout-trust-chips {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+    .checkout-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    /* Mobile Collapsible Summary Bar (< 868px) */
+    .mobile-summary-toggle {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      user-select: none;
+      transition: all 0.2s ease;
     }
     @media (max-width: 868px) {
-      .checkout-grid {
-        grid-template-columns: 1fr;
-        gap: 28px;
-      }
-      .checkout-wrap {
-        padding: 24px 16px;
+      .mobile-summary-toggle {
+        display: block;
       }
     }
-    .checkout-card {
+    .mobile-summary-content {
+      display: none;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      padding: 34px;
+      padding: 20px;
+      margin-bottom: 24px;
       box-shadow: var(--shadow-sm);
     }
-    @media (max-width: 576px) {
-      .checkout-card {
-        padding: 22px;
+
+    /* Two-Column Grid */
+    .checkout-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .checkout-layout-grid {
+        grid-template-columns: 1fr 370px;
+        gap: 22px;
       }
     }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 20px;
+    @media (max-width: 868px) {
+      .checkout-layout-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .checkout-page-wrap {
+        padding: 20px 14px 60px 14px;
+      }
     }
-    .form-label {
+
+    /* Luxury Cards */
+    .atelier-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .atelier-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--brand-gold), transparent);
+      opacity: 0.85;
+    }
+    @media (max-width: 576px) {
+      .atelier-card {
+        padding: 22px 16px;
+      }
+    }
+
+    /* Section Header Badges */
+    .card-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .card-section-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-section-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--border-gold);
+      color: var(--brand-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 0.78rem;
+      font-weight: 800;
+      font-family: var(--font-heading);
+    }
+    .card-section-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
       font-weight: 700;
       color: var(--text-primary);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.5px;
+      margin: 0;
     }
-    .form-input {
-      width: 100%;
-      padding: 13px 16px;
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-size: 0.92rem;
-      font-weight: 500;
-      outline: none;
-      transition: all 0.2s ease;
-    }
-    .form-input:focus {
-      border-color: var(--brand-gold);
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
-    }
-    .form-row-2 {
+
+    /* Form Groups & Controls */
+    .form-row-2-lux {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
-    @media (max-width: 576px) {
-      .form-row-2 {
+    @media (max-width: 600px) {
+      .form-row-2-lux {
         grid-template-columns: 1fr;
         gap: 0;
       }
     }
-    .pm-card {
+    .form-group-lux {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .form-label-lux {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .form-input-lux {
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--bg-input);
       border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.92rem;
+      font-weight: 500;
+      font-family: var(--font-body);
+      outline: none;
+      transition: all 0.25s ease;
+    }
+    .form-input-lux:focus {
+      border-color: var(--brand-gold);
+      background: var(--bg-card);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15), 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .input-with-icon {
+      position: relative;
+    }
+    .input-icon-left {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
+    .form-input-lux.has-left-icon {
+      padding-left: 42px;
+    }
+
+    /* Payment Method Selector Grid */
+    .pm-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 620px) {
+      .pm-selector-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+    .pm-lux-tile {
       background: var(--bg-secondary);
-      padding: 18px 12px;
-      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px 12px;
       cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
+      gap: 8px;
+      position: relative;
+    }
+    .pm-lux-tile:hover {
+      border-color: var(--border-gold);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
+    .pm-lux-tile.active {
+      background: rgba(212, 175, 55, 0.06);
+      border-color: var(--brand-gold);
+      box-shadow: 0 0 0 1px var(--brand-gold), 0 6px 20px rgba(212, 160, 23, 0.12);
+    }
+    .pm-tile-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--brand-gold);
       transition: all 0.2s ease;
+    }
+    .pm-lux-tile.active .pm-tile-icon-wrap {
+      border-color: var(--border-gold);
+      box-shadow: 0 0 12px var(--brand-gold-glow);
+    }
+    .pm-tile-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+    .pm-tile-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .pm-tile-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    /* Screenshot Attachment Box Styles */
+    .ss-upload-zone {
+      margin-top: 10px;
+      border: 1.5px dashed var(--border-gold);
+      border-radius: 8px;
+      background: var(--bg-card);
+      padding: 18px 14px;
+      text-align: center;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .ss-upload-zone:hover, .ss-upload-zone.dragover {
+      border-color: var(--brand-gold);
+      background: rgba(212, 160, 23, 0.08);
+      box-shadow: 0 0 16px var(--brand-gold-glow);
+    }
+    .ss-upload-label {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 6px;
+      cursor: pointer;
+      pointer-events: none;
     }
-    .pm-card.active {
-      border-color: var(--brand-gold);
-      background: rgba(212, 175, 55, 0.06);
+    .ss-upload-icon {
+      width: 32px;
+      height: 32px;
+      color: var(--brand-gold);
+      margin-bottom: 2px;
     }
-    .pm-card strong {
-      font-size: 0.86rem;
+    .ss-upload-title {
+      font-size: 0.88rem;
       font-weight: 700;
       color: var(--text-primary);
+      letter-spacing: 0.3px;
     }
-    .btn-checkout-submit {
-      width: 100%;
-      padding: 16px;
-      font-size: 0.92rem;
+    .ss-upload-sub {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+    .ss-preview-container {
+      display: none;
+      margin-top: 10px;
+      padding: 12px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .ss-preview-container.active {
+      display: flex;
+    }
+    .ss-preview-thumb {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1.5px solid var(--border-gold);
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      transition: transform 0.2s ease;
+    }
+    .ss-preview-thumb:hover {
+      transform: scale(1.05);
+    }
+    .ss-preview-info {
+      flex: 1;
+      text-align: left;
+      overflow: hidden;
+    }
+    .ss-preview-name {
+      font-size: 0.82rem;
       font-weight: 700;
-      border-radius: var(--radius-sm);
-      background: var(--brand-gold);
-      color: var(--btn-primary-text);
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ss-preview-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #2ecc71;
+      margin-top: 3px;
+    }
+    .ss-remove-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: #ef4444;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .ss-remove-btn:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: #ef4444;
+    }
+
+    /* Submit Action Button */
+    .btn-submit-acquisition {
+      width: 100%;
+      padding: 18px 24px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      font-family: var(--font-heading);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #F3C96A 0%, var(--brand-gold) 60%, #B87C1C 100%);
+      color: #12100E;
       border: none;
       cursor: pointer;
-      transition: all 0.25s ease;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 26px rgba(212, 160, 23, 0.32);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn-checkout-submit:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+    .btn-submit-acquisition:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 34px rgba(212, 160, 23, 0.48);
+    }
+    .btn-submit-acquisition:active {
+      transform: translateY(0);
+    }
+
+    /* Right Column: Order Summary Items & Guarantees */
+    .summary-items-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 290px;
+      overflow-y: auto;
+      padding-right: 6px;
+      margin-bottom: 20px;
+    }
+    .summary-item-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      transition: border-color 0.2s ease;
+    }
+    .summary-item-card:hover {
+      border-color: var(--border-gold);
+    }
+    .summary-item-thumb {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      flex-shrink: 0;
+    }
+    .summary-totals-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-color);
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+    .summary-row.total-due {
+      font-size: 1.35rem;
+      font-weight: 800;
+      font-family: var(--font-heading);
+      color: var(--text-primary);
+      padding-top: 14px;
+      margin-top: 4px;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    /* Guarantee Points Grid */
+    .guarantee-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+    .guarantee-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .guarantee-icon {
+      color: var(--brand-gold);
+      flex-shrink: 0;
+      margin-top: 1px;
     }
   </style>
 </head>
@@ -203,7 +683,7 @@
 
   <!-- Top Announcement Bar -->
   <div class="top-bar">
-    Complimentary Express Shipping Across Pakistan &nbsp;•&nbsp; Cash on Delivery Available &nbsp;•&nbsp; <strong>Verified PostEx Dispatch</strong>
+    Complimentary Express Shipping Across Pakistan &nbsp;•&nbsp; Cash on Delivery & Digital Transfer &nbsp;•&nbsp; <strong>Verified PostEx Dispatch</strong>
   </div>
 
   <!-- Haute Parfumerie Split-Wing Header Navbar -->
@@ -211,7 +691,9 @@
     <div class="container navbar">
       <!-- Left Wing: Return to Archive -->
       <div class="nav-wing-left">
-        <a href="shop.html" class="btn btn-outline" style="padding: 8px 18px; font-weight: 600; font-size: 0.82rem; letter-spacing: 0.5px; border-radius: 20px;">← Back to Archive</a>
+        <a href="shop.html" class="btn btn-outline" style="padding: 8px 18px; font-weight: 600; font-size: 0.82rem; letter-spacing: 0.5px; border-radius: 20px;">
+          ← Back to Archive
+        </a>
       </div>
 
       <!-- Center Wing: Crowned Royal Insignia Logo -->
@@ -235,7 +717,7 @@
         </a>
       </div>
 
-      <!-- Right Wing: Atelier Actions -->
+      <!-- Right Wing: Theme & Navigation Actions -->
       <div class="nav-actions nav-wing-right">
         <button class="btn-icon theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
@@ -252,54 +734,142 @@
   </header>
 
   <!-- Clean Checkout Main Container -->
-  <main class="checkout-wrap">
+  <main class="checkout-page-wrap">
     
-    <!-- Title Header -->
-    <div style="text-align: center; margin-bottom: 36px; padding: 42px 24px 30px 24px; background: radial-gradient(circle at 50% 20%, rgba(212, 160, 23, 0.12) 0%, rgba(212, 160, 23, 0.03) 50%, transparent 80%); border-radius: var(--radius-lg); border: 1px solid var(--border-gold); position: relative; overflow: hidden;">
-      <div style="position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 260px; height: 100px; background: var(--brand-gold); filter: blur(70px); opacity: 0.18; pointer-events: none;"></div>
-      <span class="badge" style="background: rgba(212, 160, 23, 0.08); border: 1px solid var(--border-gold); color: var(--brand-gold); margin-bottom: 12px; box-shadow: 0 4px 16px var(--brand-gold-glow); letter-spacing: 2px;">✦ ATELIER DISPATCH DOCKET ✦</span>
-      <h1 style="font-family: var(--font-heading); font-size: 2.3rem; font-weight: 700; color: var(--text-primary); letter-spacing: 0.5px; margin-bottom: 8px;">
-        Order <span>Acquisition</span>
-      </h1>
-      <p style="font-size: 0.92rem; color: var(--text-secondary); max-width: 580px; margin: 0 auto; line-height: 1.6;">Provide destination details below. Your dispatch docket is verified instantly with our Lahore atelier for nationwide express dispatch.</p>
+    <!-- 3-Step Atelier Stepper -->
+    <div class="atelier-stepper">
+      <a href="shop.html" class="stepper-item completed" title="Browse Collection">
+        <div class="stepper-circle">✓</div>
+        <span class="stepper-label">Collection</span>
+      </a>
+      <div class="stepper-line filled"></div>
+      <div class="stepper-item active">
+        <div class="stepper-circle">2</div>
+        <span class="stepper-label">Dispatch Docket</span>
+      </div>
+      <div class="stepper-line"></div>
+      <div class="stepper-item upcoming">
+        <div class="stepper-circle">3</div>
+        <span class="stepper-label">Insured Delivery</span>
+      </div>
     </div>
 
-    <div class="checkout-grid">
+    <!-- Editorial Hero Title Banner -->
+    <div class="checkout-hero-banner">
+      <span class="badge" style="background: rgba(212, 160, 23, 0.08); border: 1px solid var(--border-gold); color: var(--brand-gold); margin-bottom: 12px; box-shadow: 0 4px 16px var(--brand-gold-glow); letter-spacing: 2px;">
+        ✦ ATELIER CONCIERGE DISPATCH ✦
+      </span>
+      <h1 style="font-family: var(--font-heading); font-size: 2.25rem; font-weight: 700; color: var(--text-primary); letter-spacing: 0.5px; margin-bottom: 8px;">
+        Direct Atelier <span>Acquisition</span>
+      </h1>
+      <p style="font-size: 0.92rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.6;">
+        Provide your recipient destination below. Each flacon is carefully inspected, boxed in luxury safeguard presentation, and dispatched via insured courier nationwide.
+      </p>
 
-      <!-- Left Column: Delivery Form -->
-      <div class="checkout-card">
-        <h2 style="font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px;">
-          Patron & Delivery Information
-        </h2>
+      <!-- Trust Badges Row -->
+      <div class="checkout-trust-chips">
+        <div class="checkout-trust-chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--brand-gold);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>24–48h Express Transit</span>
+        </div>
+        <div class="checkout-trust-chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--brand-gold);"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          <span>Complimentary PostEx Dispatch</span>
+        </div>
+        <div class="checkout-trust-chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--brand-gold);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>100% Authentic French Essences</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Collapsible Summary Toggle (< 868px) -->
+    <div class="mobile-summary-toggle" id="chk-mobile-summary-toggle" onclick="CheckoutManager.toggleMobileSummary()">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--brand-gold);"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <span style="font-weight:700; font-size:0.88rem; color:var(--text-primary);">
+            View Order Summary (<span id="chk-mobile-summary-count">0 Items</span>)
+          </span>
+          <svg id="chk-mobile-summary-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted); transition:transform 0.25s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div style="font-weight:800; font-size:0.95rem; color:var(--brand-gold);" id="chk-mobile-summary-total">
+          PKR 0
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Collapsible Dropdown Content -->
+    <div class="mobile-summary-content" id="chk-mobile-summary-content">
+      <div id="chk-mobile-items-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
+        <!-- Populated dynamically via JS -->
+      </div>
+      <div style="display:flex; justify-content:space-between; padding-top:10px; border-top:1px solid var(--border-color); font-size:0.85rem; color:var(--text-secondary);">
+        <span>Express Courier Dispatch:</span>
+        <span style="color:var(--status-success); font-weight:700;">FREE Nationwide</span>
+      </div>
+    </div>
+
+    <!-- Checkout Main Two-Column Layout -->
+    <div class="checkout-layout-grid">
+
+      <!-- Left Column: Delivery Details & Payment Selection -->
+      <div class="atelier-card">
+        
+        <!-- Step 1 Header -->
+        <div class="card-section-header">
+          <div class="card-section-title-wrap">
+            <div class="card-section-num">1</div>
+            <h2 class="card-section-title">Patron & Destination Information</h2>
+          </div>
+          <span class="badge" style="background:rgba(46,204,113,0.12); color:#2ecc71; border:1px solid #2ecc71; font-size:0.72rem; font-weight:700;">
+            Insured Logistics
+          </span>
+        </div>
 
         <form id="checkout-main-form" onsubmit="CheckoutManager.handleFormSubmit(event)">
           
-          <div class="form-row-2">
-            <div class="form-group">
-              <label class="form-label" for="chk-name">Full Name *</label>
-              <input type="text" id="chk-name" class="form-input" placeholder="e.g. Muhammad Ali" required>
+          <div class="form-row-2-lux">
+            <div class="form-group-lux">
+              <label class="form-label-lux" for="chk-name">Full Recipient Name *</label>
+              <div class="input-with-icon">
+                <span class="input-icon-left">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </span>
+                <input type="text" id="chk-name" class="form-input-lux has-left-icon" placeholder="e.g. Muhammad Rehan" required>
+              </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label" for="chk-phone">WhatsApp Contact *</label>
-              <input type="tel" id="chk-phone" class="form-input" placeholder="e.g. 03001234567" required>
+            <div class="form-group-lux">
+              <label class="form-label-lux" for="chk-phone">WhatsApp Contact *</label>
+              <div class="input-with-icon">
+                <span class="input-icon-left" style="font-size:0.8rem; font-weight:700; color:var(--text-muted); gap:4px;">
+                  🇵🇰 +92
+                </span>
+                <input type="tel" id="chk-phone" class="form-input-lux" style="padding-left:68px;" placeholder="3001234567" required>
+              </div>
             </div>
           </div>
 
-          <div class="form-row-2">
-            <div class="form-group" style="position: relative;">
-              <label class="form-label" for="chk-city-search">City of Residence *</label>
+          <div class="form-row-2-lux">
+            <!-- City Dropdown -->
+            <div class="form-group-lux" style="position: relative;">
+              <label class="form-label-lux" for="chk-city-search">City of Residence *</label>
               
               <input type="hidden" id="chk-city" value="Lahore" required>
 
-              <div id="city-selector-box" onclick="CheckoutManager.toggleCityDropdown(event)" class="form-input" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;">
-                <span id="city-selected-text" style="font-weight: 600;">Lahore</span>
+              <div id="city-selector-box" onclick="CheckoutManager.toggleCityDropdown(event)" class="form-input-lux" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--brand-gold);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  <span id="city-selected-text" style="font-weight: 700; color:var(--text-primary);">Lahore</span>
+                </div>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </div>
 
+              <!-- Filterable City Dropdown Menu -->
               <div id="city-dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: 280px; background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 8px; z-index: 999; box-shadow: var(--shadow-lg); overflow: hidden; margin-top: 4px;">
                 <div style="padding: 10px; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color);">
-                  <input type="text" id="city-search-input" onkeyup="CheckoutManager.filterCities(this.value)" placeholder="Search city (e.g. Lahore, Karachi, Islamabad)..." style="width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 0.85rem; outline: none;">
+                  <input type="text" id="city-search-input" onkeyup="CheckoutManager.filterCities(this.value)" placeholder="Search Pakistan cities..." style="width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 0.85rem; outline: none;">
                 </div>
                 <div id="city-options-list" style="max-height: 210px; overflow-y: auto; padding: 4px 0;">
                   <!-- Options rendered by JS -->
@@ -307,116 +877,207 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label" for="chk-email">Email Address (Optional)</label>
-              <input type="email" id="chk-email" class="form-input" placeholder="e.g. patron@domain.com">
+            <div class="form-group-lux">
+              <label class="form-label-lux" for="chk-email">
+                Email Address <span style="font-size:0.7rem; color:var(--text-muted); font-weight:400; text-transform:none;">(Optional)</span>
+              </label>
+              <div class="input-with-icon">
+                <span class="input-icon-left">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </span>
+                <input type="email" id="chk-email" class="form-input-lux has-left-icon" placeholder="patron@domain.com">
+              </div>
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="chk-address">Complete Shipping Address *</label>
-            <textarea id="chk-address" class="form-input" rows="3" placeholder="e.g. House 14, Street 8, Phase 5 DHA, Lahore" required style="resize: vertical;"></textarea>
+          <div class="form-group-lux">
+            <label class="form-label-lux" for="chk-address">Complete Delivery Address *</label>
+            <div class="input-with-icon">
+              <textarea id="chk-address" class="form-input-lux" rows="3" placeholder="House / Apartment #, Street #, Sector / Phase / Area, City landmark" required style="resize: vertical;"></textarea>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="chk-notes">Atelier Dispatch Notes (Optional)</label>
-            <input type="text" id="chk-notes" class="form-input" placeholder="e.g. Fragile maceration packaging / Call prior to delivery">
+          <div class="form-group-lux">
+            <label class="form-label-lux" for="chk-notes">
+              Atelier Special Instructions <span style="font-size:0.7rem; color:var(--text-muted); font-weight:400; text-transform:none;">(Optional)</span>
+            </label>
+            <input type="text" id="chk-notes" class="form-input-lux" placeholder="e.g. Fragile macerated flacon safeguard / Call before arrival">
           </div>
 
-          <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-            <label class="form-label" style="margin-bottom: 12px; display: block;">Settlement Method *</label>
+          <!-- Step 2: Payment Section -->
+          <div style="margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--border-color);">
             
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;" class="checkout-pm-grid">
-              <label class="pm-card active">
-                <input type="radio" name="chk-payment" value="Cash on Delivery" checked onchange="CheckoutManager.selectPaymentMethod(this)" style="display: none;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-gold); margin-bottom:4px;"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
-                <strong>Cash on Delivery</strong>
-                <span style="font-size: 0.72rem; color: var(--text-muted);">PostEx COD</span>
-              </label>
-
-              <label class="pm-card">
-                <input type="radio" name="chk-payment" value="EasyPaisa" onchange="CheckoutManager.selectPaymentMethod(this)" style="display: none;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-gold); margin-bottom:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-                <strong>EasyPaisa</strong>
-                <span style="font-size: 0.72rem; color: var(--text-muted);">Direct Transfer</span>
-              </label>
-
-              <label class="pm-card">
-                <input type="radio" name="chk-payment" value="JazzCash" onchange="CheckoutManager.selectPaymentMethod(this)" style="display: none;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-gold); margin-bottom:4px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                <strong>JazzCash</strong>
-                <span style="font-size: 0.72rem; color: var(--text-muted);">Direct Transfer</span>
-              </label>
+            <div class="card-section-header">
+              <div class="card-section-title-wrap">
+                <div class="card-section-num">2</div>
+                <h3 class="card-section-title">Settlement Method</h3>
+              </div>
+              <span class="badge" style="background:rgba(212,175,55,0.12); color:var(--brand-gold); border:1px solid var(--border-gold); font-size:0.72rem; font-weight:700;">
+                Direct Atelier
+              </span>
             </div>
 
-            <!-- Account Info Box -->
-            <div id="chk-pm-info-box" style="display: none; margin-top: 14px; background: var(--bg-secondary); border: 1px solid var(--border-gold); padding: 14px; border-radius: 8px;">
+            <!-- 3 Modern Payment Method Selector Tiles -->
+            <div class="pm-selector-grid">
+              
+              <!-- Cash on Delivery -->
+              <label class="pm-lux-tile active pm-card">
+                <input type="radio" name="chk-payment" value="Cash on Delivery" checked onchange="CheckoutManager.selectPaymentMethod(this)" style="display: none;">
+                <div class="pm-tile-icon-wrap">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+                </div>
+                <div class="pm-tile-title">Cash on Delivery</div>
+                <div class="pm-tile-sub">Pay at doorstep</div>
+                <span class="pm-tile-badge" style="background:rgba(212,175,55,0.14); color:var(--brand-gold);">PostEx Verified</span>
+              </label>
+
+              <!-- EasyPaisa -->
+              <label class="pm-lux-tile pm-card">
+                <input type="radio" name="chk-payment" value="EasyPaisa" onchange="CheckoutManager.selectPaymentMethod(this)" style="display: none;">
+                <div class="pm-tile-icon-wrap" style="color:#00A651;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                </div>
+                <div class="pm-tile-title">EasyPaisa</div>
+                <div class="pm-tile-sub">Direct Transfer</div>
+                <span class="pm-tile-badge" style="background:rgba(0,166,81,0.12); color:#00A651;">Instant Verified</span>
+              </label>
+
+              <!-- JazzCash -->
+              <label class="pm-lux-tile pm-card">
+                <input type="radio" name="chk-payment" value="JazzCash" onchange="CheckoutManager.selectPaymentMethod(this)" style="display: none;">
+                <div class="pm-tile-icon-wrap" style="color:#D32F2F;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                </div>
+                <div class="pm-tile-title">JazzCash</div>
+                <div class="pm-tile-sub">Direct Transfer</div>
+                <span class="pm-tile-badge" style="background:rgba(211,47,47,0.12); color:#D32F2F;">Instant Verified</span>
+              </label>
+
+            </div>
+
+            <!-- Account Details Box (Shown dynamically when EasyPaisa/JazzCash selected) -->
+            <div id="chk-pm-info-box" style="display: none; margin-top: 16px; background: var(--bg-secondary); border: 1px solid var(--border-gold); padding: 18px; border-radius: 10px;">
+              <!-- Dynamically populated via js/checkout.js -->
             </div>
           </div>
 
-          <button type="submit" class="btn-checkout-submit" style="margin-top: 26px;">
-            Confirm Dispatch Docket via WhatsApp
-          </button>
+          <!-- Submit Order CTA Button -->
+          <div style="margin-top: 28px;">
+            <button type="submit" class="btn-submit-acquisition">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.52 3.48A11.9 11.9 0 0 0 12.02 0C5.4 0 .04 5.36.04 11.98c0 2.11.55 4.17 1.6 5.99L0 24l6.21-1.63a11.93 11.93 0 0 0 5.8 1.49h.01c6.62 0 11.98-5.36 11.98-11.98 0-3.2-1.25-6.21-3.48-8.4zM12.02 21.84h-.01a9.9 9.9 0 0 1-5.05-1.38l-.36-.21-3.75.98 1-3.65-.24-.38a9.92 9.92 0 0 1-1.52-5.22c0-5.48 4.46-9.94 9.94-9.94 2.65 0 5.15 1.03 7.03 2.91a9.88 9.88 0 0 1 2.91 7.03c0 5.48-4.46 9.94-9.94 9.94zm5.45-7.44c-.3-.15-1.77-.87-2.04-.97-.28-.1-.48-.15-.68.15-.2.3-.78.97-.95 1.17-.18.2-.35.23-.65.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.78-1.68-2.08-.18-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.07-.15-.68-1.63-.93-2.24-.24-.59-.49-.51-.68-.52h-.58c-.2 0-.52.08-.8.38-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35z"/></svg>
+              <span>Confirm Dispatch Docket via WhatsApp Concierge</span>
+            </button>
+          </div>
 
-          <div style="font-size: 0.76rem; color: var(--text-muted); text-align: center; margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            <span>Confidential Encrypted Submission &bull; Insured PostEx Courier Transit</span>
+          <!-- Trust & Security Reassurance -->
+          <div style="font-size: 0.76rem; color: var(--text-muted); text-align: center; margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+            <div style="display:flex; align-items:center; gap:4px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--brand-gold);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <span>Encrypted Atelier Verification</span>
+            </div>
+            <span>&bull;</span>
+            <span>Insured PostEx Courier Transit</span>
+            <span>&bull;</span>
+            <span>7-Day Olfactory Guarantee</span>
           </div>
 
         </form>
       </div>
 
-      <!-- Right Column: Order Summary Card -->
-      <div class="checkout-card" style="position: sticky; top: 100px;">
-        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px;">
-          Acquisition Summary
-        </h3>
-
-        <!-- Items Container -->
-        <div id="chk-items-list" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; max-height: 280px; overflow-y: auto; padding-right: 4px;">
-          <!-- Dynamically populated -->
+      <!-- Right Column: Sticky Acquisition Summary Card -->
+      <aside class="atelier-card" style="position: sticky; top: 100px;">
+        
+        <div class="card-section-header">
+          <div class="card-section-title-wrap">
+            <h3 class="card-section-title">Acquisition Summary</h3>
+          </div>
+          <span class="badge" id="chk-item-count" style="background:rgba(212,175,55,0.12); color:var(--brand-gold); border:1px solid var(--border-gold); font-size:0.72rem; font-weight:700;">
+            0 Flacons
+          </span>
         </div>
 
-        <!-- Promo Code Input -->
-        <div style="display: flex; gap: 8px; margin-bottom: 18px;">
-          <input type="text" id="chk-coupon-input" placeholder="Promotional Code" class="form-input" style="padding: 10px 14px; font-size: 0.82rem; text-transform: uppercase;">
-          <button type="button" onclick="CheckoutManager.applyCoupon()" class="btn btn-outline" style="padding: 10px 18px; font-weight: 700; font-size: 0.8rem;">Apply</button>
+        <!-- Scrollable Flacon Items Container -->
+        <div id="chk-items-list" class="summary-items-scroll">
+          <!-- Dynamically populated via js/checkout.js -->
         </div>
-        <div id="chk-coupon-msg" style="display: none; font-size: 0.78rem; font-weight: 600; margin-top: -10px; margin-bottom: 16px;"></div>
 
-        <!-- Pricing Totals -->
-        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.88rem; padding-top: 16px; border-top: 1px solid var(--border-color);">
-          <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+        <!-- Promotional Privilege Voucher Box -->
+        <div style="margin-bottom: 18px;">
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="chk-coupon-input" placeholder="Promotional Code" class="form-input-lux" style="padding: 10px 14px; font-size: 0.82rem; text-transform: uppercase;">
+            <button type="button" onclick="CheckoutManager.applyCoupon()" class="btn btn-outline" style="padding: 10px 18px; font-weight: 700; font-size: 0.8rem; border-color:var(--brand-gold); color:var(--brand-gold); white-space:nowrap;">
+              Apply
+            </button>
+          </div>
+          <div style="font-size:0.72rem; color:var(--text-muted); margin-top:5px; padding-left:2px;">
+            Private patron invitation? Apply code <strong style="color:var(--brand-gold);">SAVE20</strong> for 20% privilege.
+          </div>
+          <div id="chk-coupon-msg" style="display: none; font-size: 0.78rem; font-weight: 600; margin-top: 6px;"></div>
+        </div>
+
+        <!-- Financial Totals -->
+        <div class="summary-totals-card">
+          <div class="summary-row">
             <span>Creations Subtotal:</span>
             <span id="chk-subtotal-val" style="font-weight: 700; color: var(--text-primary);">PKR 0</span>
           </div>
 
-          <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
-            <span>Courier Transit:</span>
-            <span style="font-weight: 700; color: var(--status-success);">Complimentary Express</span>
+          <div class="summary-row">
+            <span>Insured Courier Dispatch:</span>
+            <span style="font-weight: 700; color: var(--status-success);">Complimentary (Free)</span>
           </div>
 
-          <div id="chk-discount-row" style="display: none; justify-content: space-between; color: var(--status-success); font-weight: 700;">
-            <span>Privilege Discount:</span>
+          <div id="chk-discount-row" class="summary-row" style="display: none; color: var(--status-success); font-weight: 700;">
+            <span>Patron Privilege Discount:</span>
             <span id="chk-discount-val">-PKR 0</span>
           </div>
 
-          <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+          <div class="summary-row total-due">
             <span>Total Payable:</span>
             <span id="chk-total-val" style="color: var(--brand-gold);">PKR 0</span>
           </div>
         </div>
 
-        <div style="margin-top: 24px; padding: 14px; background: var(--bg-secondary); border-radius: 8px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; border: 1px solid var(--border-color);">
-          <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">PostEx Insured Tracking</div>
-          Each parcel is assigned a unique courier identifier (PEX-XXXX) communicated via SMS upon dispatch.
+        <!-- PostEx Courier Notice -->
+        <div style="margin-top: 20px; padding: 12px 14px; background: var(--bg-secondary); border-radius: 8px; font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; border: 1px solid var(--border-color); display:flex; align-items:center; gap:10px;">
+          <div style="width:32px; height:32px; border-radius:6px; background:rgba(212,175,55,0.12); display:flex; align-items:center; justify-content:center; color:var(--brand-gold); flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          </div>
+          <div>
+            <strong style="color:var(--text-primary); display:block;">PostEx Insured Tracking</strong>
+            Assigned tracking CN sent via SMS immediately upon atelier sealing.
+          </div>
         </div>
-      </div>
+
+        <!-- 4 Reassurance Guarantees -->
+        <div class="guarantee-grid">
+          <div class="guarantee-item">
+            <svg class="guarantee-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <div><strong>100% Authentic</strong> French fragrance oils</div>
+          </div>
+
+          <div class="guarantee-item">
+            <svg class="guarantee-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <div><strong>Safeguard Packaging</strong> Maceration proof</div>
+          </div>
+
+          <div class="guarantee-item">
+            <svg class="guarantee-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            <div><strong>7-Day Guarantee</strong> Olfactory satisfaction</div>
+          </div>
+
+          <div class="guarantee-item">
+            <svg class="guarantee-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <div><strong>Concierge Help</strong> +92 340 3256108</div>
+          </div>
+        </div>
+
+      </aside>
 
     </div>
   </main>
 
-  <!-- Luxury Atelier Footer -->
+  <!-- Luxury Atelier Clean Footer -->
   <footer class="footer">
     <div class="container footer-grid">
       <!-- Column 1: Brand & Craft -->
@@ -472,7 +1133,7 @@
       <div style="display:flex; gap:16px; font-size:0.8rem; color:var(--text-secondary); flex-wrap:wrap;">
         <span>Cash on Delivery</span>
         <span>&bull;</span>
-        <span>Raast &bull; Bank Transfer &bull; JazzCash</span>
+        <span>Raast &bull; EasyPaisa &bull; JazzCash</span>
       </div>
     </div>
   </footer>

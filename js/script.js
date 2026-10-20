@@ -52,7 +52,10 @@ const CPApp = {
       const pathname = window.location.pathname;
       if (pathname.endsWith('.html')) {
         let cleanPath = pathname.replace(/\.html$/, '');
-        if (cleanPath === '/index') cleanPath = '/';
+        if (cleanPath.endsWith('/index')) {
+          cleanPath = cleanPath.slice(0, -5);
+          if (cleanPath === '') cleanPath = '/';
+        }
         const cleanUrl = cleanPath + window.location.search + window.location.hash;
         try {
           window.history.replaceState(null, '', cleanUrl);

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-palette="modern-noir">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Formulation Not Found | Chaudhary Parfums Lahore</title>
+  <meta name="robots" content="noindex, follow">
+
+  <!-- Instant Clean URL Resolver for GitHub Pages -->
+  <script>
+    (function() {
+      try {
+        var path = window.location.pathname;
+        var segments = path.split('/').filter(Boolean);
+        var lastSegment = segments[segments.length - 1] || '';
+        
+        var cleanPages = {
+          'shop': 'shop.html',
+          'checkout': 'checkout.html',
+          'about-us': 'about-us.html',
+          'about': 'about-us.html',
+          'contact-us': 'contact-us.html',
+          'contact': 'contact-us.html',
+          'dashboard': 'dashboard.html',
+          'auth': 'auth.html',
+          'login': 'auth.html',
+          'admin': 'admin.html',
+          'index': 'index.html'
+        };
+
+        if (cleanPages[lastSegment]) {
+          var target = cleanPages[lastSegment];
+          var search = window.location.search || '';
+          var hash = window.location.hash || '';
+          window.location.replace(target + search + hash);
+        }
+      } catch(e) {}
+    })();
+  </script>
+
+  <!-- Instant Theme Script (Prevents Refresh Flash) -->
+  <script>
+    (function() {
+      try {
+        if (localStorage.getItem('cp_theme_v3') !== 'true') {
+          localStorage.setItem('cp_palette_pref', 'modern-noir');
+          localStorage.setItem('cp_theme_pref', 'light');
+          localStorage.setItem('cp_theme_v3', 'true');
+        }
+        var p = localStorage.getItem('cp_palette_pref') || 'modern-noir';
+        var t = localStorage.getItem('cp_theme_pref') || 'light';
+        document.documentElement.setAttribute('data-palette', p);
+        document.documentElement.setAttribute('data-theme', t);
+      } catch(e) {}
+    })();
+  </script>
+
+  <!-- Preconnect & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    Artisanal French Formulations &nbsp;•&nbsp; Lahore Atelier &nbsp;•&nbsp; <strong>Complimentary Insured Delivery</strong>
+  </div>
+
+  <!-- Haute Parfumerie Split-Wing Header Navbar -->
+  <header class="header">
+    <div class="container navbar">
+      <div class="nav-wing-left">
+        <a href="shop.html" class="nav-link">Collection</a>
+        <a href="about-us.html" class="nav-link">Heritage</a>
+      </div>
+
+      <div class="nav-center-wing">
+        <a href="index.html" class="logo">
+          <div class="logo-seal-wrap">
+            <svg class="logo-crown-svg" viewBox="0 0 24 16" fill="currentColor" aria-hidden="true">
+              <path d="M2 14h20v2H2v-2zm1.5-3l3.2-6.5 5.3 4.5 5.3-4.5 3.2 6.5H3.5z"/>
+              <circle cx="2" cy="6" r="1.5"/>
+              <circle cx="6.7" cy="4" r="1.5"/>
+              <circle cx="12" cy="2" r="1.8"/>
+              <circle cx="17.3" cy="4" r="1.5"/>
+              <circle cx="22" cy="6" r="1.5"/>
+            </svg>
+            <span class="logo-mark">C</span>
+          </div>
+          <div class="logo-text-group">
+            <span class="logo-brand">CHAUDHARY</span>
+            <span class="logo-sub">PARFUMS • LAHORE</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="nav-actions nav-wing-right">
+        <button class="btn-icon theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <a href="shop.html" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.82rem; border-radius: 20px;">
+          Shop Collection
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 404 Hero Section -->
+  <main style="min-height: 65vh; display: flex; align-items: center; justify-content: center; padding: 60px 20px; text-align: center;">
+    <div style="max-width: 580px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: var(--radius-lg); padding: 48px 32px; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;">
+      
+      <div style="position: absolute; top: -60px; left: 50%; transform: translateX(-50%); width: 240px; height: 120px; background: var(--brand-gold); filter: blur(75px); opacity: 0.2; pointer-events: none;"></div>
+
+      <span class="badge" style="background: rgba(212, 160, 23, 0.1); border: 1px solid var(--border-gold); color: var(--brand-gold); margin-bottom: 16px; letter-spacing: 2px;">
+        ✦ ARCHIVED OR UNKNOWN DISPATCH ✦
+      </span>
+
+      <div style="font-family: var(--font-heading); font-size: 4.5rem; font-weight: 800; color: var(--brand-gold); line-height: 1; margin-bottom: 12px; letter-spacing: 2px;">
+        404
+      </div>
+
+      <h1 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--text-primary); margin-bottom: 12px; font-weight: 700;">
+        Olfactory Formulation Not Found
+      </h1>
+
+      <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 28px;">
+        The atelier docket or fragrance flacon you are seeking is either currently resting in maceration, has been moved, or does not exist.
+      </p>
+
+      <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <a href="shop.html" class="btn btn-primary" style="padding: 12px 24px; font-weight: 700; font-size: 0.88rem;">
+          Explore Fragrance Archive →
+        </a>
+        <a href="index.html" class="btn btn-outline" style="padding: 12px 24px; font-weight: 600; font-size: 0.88rem;">
+          Return Home
+        </a>
+      </div>
+
+      <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border-color); font-size: 0.82rem; color: var(--text-muted);">
+        Need personal assistance? <a href="https://api.whatsapp.com/send?phone=923403256108" target="_blank" style="color: var(--brand-gold); text-decoration: underline; font-weight: 600;">Connect with Concierge on WhatsApp</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Luxury Clean Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <span class="logo-mark">C</span>
+          <div class="logo-text-group">
+            <span class="logo-brand">CHAUDHARY</span>
+            <span class="logo-sub">PARFUMS • LAHORE</span>
+          </div>
+        </a>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.7; margin-top: 16px;">
+          Artisanal Eau de Parfum handcrafted in Lahore, Pakistan. Formulated with authentic French fragrance essences.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="footer-heading">Olfactory Edits</h4>
+        <ul class="footer-links">
+          <li><a href="shop.html?cat=Men">Masculine Line</a></li>
+          <li><a href="shop.html?cat=Women">Feminine Line</a></li>
+          <li><a href="shop.html?cat=Unisex">Genderless Editions</a></li>
+          <li><a href="shop.html">Complete Archive</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-heading">The Maison</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Atelier Home</a></li>
+          <li><a href="about-us.html">Heritage & Craft</a></li>
+          <li><a href="contact-us.html">Client Concierge</a></li>
+          <li><a href="dashboard.html">Patron Account</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-heading">Client Concierge</h4>
+        <ul class="footer-links">
+          <li><a href="https://api.whatsapp.com/send?phone=923403256108" target="_blank">WhatsApp: +92 340 3256108</a></li>
+          <li><a href="mailto:Chudharyperfumes1@gmail.com">Chudharyperfumes1@gmail.com</a></li>
+          <li><a href="checkout.html">Direct Dispatch Docket</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>&copy; 2026 <strong>Chaudhary Parfums</strong>. Handcrafted in Pakistan. All Rights Reserved.</div>
+      <div style="display:flex; gap:16px; font-size:0.8rem; color:var(--text-secondary); flex-wrap:wrap;">
+        <span>Cash on Delivery</span>
+        <span>&bull;</span>
+        <span>EasyPaisa &bull; JazzCash</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

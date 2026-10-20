@@ -645,6 +645,9 @@ const AdminManager = {
       const trackingCN = o.trackingNo || ('PEX-' + Math.floor(10000000 + Math.random()*90000000));
       const waMsg = encodeURIComponent(`Hi ${o.customerName}, your Chudhary Perfumes Order #${o.id} (PostEx CN: ${trackingCN}) is currently [${o.status}]. Delivery to ${o.city}. Total PKR ${o.total.toLocaleString()} Cash on Delivery via PostEx.`);
 
+      const pmLabel = o.paymentMethod || 'Cash on Delivery';
+      const hasSS = !!o.paymentProof;
+
       return `
         <tr style="border-bottom: 1px solid var(--border-color);">
           <td style="padding: 14px 12px; font-weight: 700; color: var(--brand-gold);">${o.id}</td>
@@ -654,7 +657,17 @@ const AdminManager = {
             <div style="font-size: 0.74rem; color: var(--text-muted);">${o.address || ''}</div>
           </td>
           <td style="padding: 14px 12px; font-size:0.85rem; color: var(--text-secondary);">${o.items}</td>
-          <td style="padding: 14px 12px; font-weight: 800; color: var(--brand-gold);">PKR ${o.total.toLocaleString()}</td>
+          <td style="padding: 14px 12px;">
+            <div style="font-weight: 800; color: var(--brand-gold);">PKR ${o.total.toLocaleString()}</div>
+            <div style="font-size: 0.73rem; color: var(--text-muted); margin-top: 2px;">${pmLabel}</div>
+            ${hasSS ? `
+              <button type="button" onclick="AdminManager.viewPaymentProof('${o.id}')" style="margin-top:5px; display:inline-flex; align-items:center; gap:4px; padding:3px 8px; font-size:0.72rem; font-weight:700; background:rgba(46,204,113,0.12); border:1px solid #2ecc71; color:#2ecc71; border-radius:4px; cursor:pointer;" title="View Attached Payment Screenshot">
+                📸 View SS
+              </button>
+            ` : (pmLabel !== 'Cash on Delivery' ? `
+              <span style="font-size:0.68rem; color:#e67e22; display:block; margin-top:4px;">No SS Attached</span>
+            ` : '')}
+          </td>
           <td style="padding: 14px 12px;">
             <div style="font-size: 0.8rem; font-weight:700; color:var(--text-primary);">${trackingCN}</div>
             <div style="font-size: 0.72rem; color:var(--text-muted);">${o.courierPartner || cfg.partner}</div>
@@ -662,12 +675,15 @@ const AdminManager = {
           <td style="padding: 14px 12px;">
             <select onchange="AdminManager.updateOrderStatus('${o.id}', this.value)" style="padding: 6px 10px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 0.8rem; font-weight: 600;">
               <option value="Pending COD" ${o.status === 'Pending COD' ? 'selected' : ''}>Pending COD</option>
+              <option value="Payment Verified (SS Attached)" ${o.status === 'Payment Verified (SS Attached)' ? 'selected' : ''}>Payment Verified (SS Attached)</option>
+              <option value="Awaiting Payment SS" ${o.status === 'Awaiting Payment SS' ? 'selected' : ''}>Awaiting Payment SS</option>
               <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
               <option value="Dispatched" ${o.status === 'Dispatched' ? 'selected' : ''}>Dispatched (PostEx)</option>
               <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
             </select>
           </td>
           <td style="padding: 14px 12px; text-align: right; white-space: nowrap;">
+            ${hasSS ? `<button onclick="AdminManager.viewPaymentProof('${o.id}')" class="btn btn-outline" style="padding: 4px 8px; font-size: 0.75rem; border-color: #2ecc71; color: #2ecc71; margin-right: 4px;" title="View Attached Payment Screenshot">📸 SS</button>` : ''}
             <button onclick="AdminManager.openLiveTrackingModal('${o.id}')" class="btn btn-outline" style="padding: 4px 10px; font-size: 0.75rem; border-color: var(--brand-gold); color: var(--brand-gold); margin-right: 4px;" title="Track Consignment">Track</button>
             <a href="https://api.whatsapp.com/send?phone=${waPhone}&text=${waMsg}" target="_blank" class="btn btn-outline" style="padding: 4px 8px; font-size: 0.75rem; border-color: #25D366; color: #25D366; margin-right: 4px;" title="Send WhatsApp Update">WhatsApp</a>
             <button onclick="AdminManager.deleteOrder('${o.id}')" style="background: none; border: none; color: #ef4444; font-size: 0.8rem; cursor: pointer; text-decoration: underline;" title="Delete Order">Remove</button>
@@ -835,6 +851,78 @@ const AdminManager = {
 
         <div style="margin-top:28px; text-align:right;">
           <button class="btn btn-primary" onclick="ShopManager.closeQuickView()">Close Tracking Window</button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.add('active');
+    overlay.classList.add('active');
+  },
+
+  viewPaymentProof(orderId) {
+    const orders = this.getOrders();
+    const order = orders.find(o => o.id === orderId);
+    if (!order) return;
+
+    if (!order.paymentProof) {
+      if (window.showToast) window.showToast('No payment screenshot attached for this order.', 'info');
+      return;
+    }
+
+    const modal = document.querySelector('.quick-view-modal');
+    const overlay = document.querySelector('.modal-overlay');
+    if (!modal || !overlay) return;
+
+    modal.querySelector('.quick-view-body').innerHTML = `
+      <div style="padding:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid var(--border-color); padding-bottom:10px; flex-wrap:wrap; gap:8px;">
+          <div>
+            <span class="badge" style="background:rgba(46,204,113,0.15); color:#2ecc71; border:1px solid #2ecc71; font-size:0.75rem; font-weight:700;">
+              ✓ DIGITAL PAYMENT SCREENSHOT (SS)
+            </span>
+            <h2 style="font-size:1.35rem; font-family:var(--font-heading); color:var(--text-primary); margin-top:6px; font-weight:800;">
+              Order ${order.id} • ${order.paymentMethod || 'Digital Transfer'}
+            </h2>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.75rem; color:var(--text-muted);">Amount Settled</div>
+            <div style="font-size:1.15rem; font-weight:800; color:var(--brand-gold);">PKR ${(order.total || 0).toLocaleString()}</div>
+          </div>
+        </div>
+
+        <!-- Metadata Card -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:10px; background:var(--bg-secondary); padding:12px 16px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:16px; font-size:0.84rem;">
+          <div>
+            <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase;">Patron Name</div>
+            <strong style="color:var(--text-primary);">${order.customerName}</strong>
+          </div>
+          <div>
+            <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase;">Phone Number</div>
+            <strong style="color:var(--text-primary);">${order.phone || 'N/A'}</strong>
+          </div>
+          <div>
+            <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase;">Account Destination</div>
+            <strong style="color:var(--text-primary);">${order.paymentTitle || (order.paymentMethod === 'EasyPaisa' ? 'Atiqa Tayyab' : 'Shazia Ishaq')}</strong>
+          </div>
+          <div>
+            <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase;">Transaction ID / TID</div>
+            <strong style="color:var(--brand-gold);">${order.trxId || 'Not specified by patron'}</strong>
+          </div>
+        </div>
+
+        <!-- High Resolution Screenshot Image Preview -->
+        <div style="background:#0a0a0a; border:1px solid var(--border-color); border-radius:10px; padding:12px; text-align:center; max-height:480px; overflow-y:auto; margin-bottom:16px;">
+          <img src="${order.paymentProof}" alt="Payment Screenshot Receipt" style="max-width:100%; height:auto; border-radius:6px; box-shadow:0 8px 24px rgba(0,0,0,0.5); display:inline-block;">
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <a href="${order.paymentProof}" download="Payment-Proof-${order.id}.jpg" class="btn btn-outline" style="font-size:0.82rem; padding:8px 16px; border-color:var(--brand-gold); color:var(--brand-gold); text-decoration:none;">
+            📥 Download Screenshot
+          </a>
+          <button type="button" class="btn btn-primary" onclick="ShopManager.closeQuickView()" style="font-size:0.85rem; padding:8px 20px;">
+            Done / Close
+          </button>
         </div>
       </div>
     `;

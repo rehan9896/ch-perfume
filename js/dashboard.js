@@ -55,17 +55,34 @@ const DashboardManager = {
       return;
     }
 
-    ordersBody.innerHTML = orders.map(o => `
-      <tr>
-        <td style="font-weight:600; color:var(--accent-gold);">${o.orderId}</td>
-        <td>${o.date}</td>
-        <td>${o.items ? o.items.map(i => `${i.name} (x${i.quantity})`).join(', ') : 'Perfume Set'}</td>
-        <td style="font-weight:600;">PKR ${parseFloat(o.total).toLocaleString()}</td>
-        <td>
-          <span class="status-badge ${o.status === 'Delivered' ? 'status-delivered' : 'status-processing'}">${o.status}</span>
-        </td>
-      </tr>
-    `).join('');
+    ordersBody.innerHTML = orders.map(o => {
+      const itemsText = Array.isArray(o.items)
+        ? o.items.map(i => `${i.name} (x${i.quantity})`).join(', ')
+        : (o.items || 'Handcrafted Fragrance');
+      const orderNum = o.orderId || o.id || 'CP-0000';
+      const isDelivered = o.status === 'Delivered';
+      const hasSS = !!o.paymentProof;
+
+      return `
+        <tr>
+          <td style="font-weight:600; color:var(--accent-gold);">${orderNum}</td>
+          <td>${o.date}</td>
+          <td>${itemsText}</td>
+          <td style="font-weight:600;">
+            <div>PKR ${parseFloat(o.total || 0).toLocaleString()}</div>
+            ${o.paymentMethod ? `<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">${o.paymentMethod}</div>` : ''}
+          </td>
+          <td>
+            <span class="status-badge ${isDelivered ? 'status-delivered' : 'status-processing'}">${o.status}</span>
+            ${hasSS ? `
+              <div style="margin-top:4px; font-size:0.72rem; color:#2ecc71; font-weight:700; display:flex; align-items:center; gap:4px;">
+                ✓ SS Attached
+              </div>
+            ` : ''}
+          </td>
+        </tr>
+      `;
+    }).join('');
   },
 
   renderWishlist() {
