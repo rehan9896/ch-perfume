@@ -643,10 +643,10 @@ const AdminManager = {
       const cleanPhone = (o.phone || '').replace(/[^0-9]/g, '');
       const waPhone = cleanPhone.startsWith('03') ? '92' + cleanPhone.substring(1) : cleanPhone;
       const trackingCN = o.trackingNo || ('PEX-' + Math.floor(10000000 + Math.random()*90000000));
-      const waMsg = encodeURIComponent(`Hi ${o.customerName}, your Chudhary Perfumes Order #${o.id} (PostEx CN: ${trackingCN}) is currently [${o.status}]. Delivery to ${o.city}. Total PKR ${o.total.toLocaleString()} Cash on Delivery via PostEx.`);
-
       const pmLabel = o.paymentMethod || 'Cash on Delivery';
       const hasSS = !!o.paymentProof;
+      const paymentNote = pmLabel === 'Cash on Delivery' ? `Total PKR ${o.total.toLocaleString()} (Cash on Delivery)` : `Total PKR ${o.total.toLocaleString()} (Paid via ${pmLabel})`;
+      const waMsg = encodeURIComponent(`Hello ${o.customerName}! Your order #${o.id} from Chudhary Perfumes is currently [${o.status}]. Tracking Number: ${trackingCN} via PostEx Courier to ${o.city}. ${paymentNote}. Thank you for shopping with Chudhary Perfumes!`);
 
       return `
         <tr style="border-bottom: 1px solid var(--border-color);">

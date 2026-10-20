@@ -514,39 +514,65 @@ const CheckoutManager = {
       localStorage.setItem('cp_order_history', JSON.stringify(history));
     } catch(err) {}
 
-    // 5. Construct Formal Atelier WhatsApp Message
-    const itemsFormatted = items.map(i => `• ${i.name} (50ml EDP) × ${i.quantity} — PKR ${(i.price * i.quantity).toLocaleString()}`).join('\n');
-    const discountNotice = this.appliedDiscount > 0 ? `\nPatron Privilege: -PKR ${this.appliedDiscount.toLocaleString()}` : '';
-    const notesNotice = notes ? `\nSpecial Instructions: ${notes}` : '';
+    // 5. Construct Clear, Easy & Detailed WhatsApp Order Message
+    const itemsFormatted = items.map((i, idx) => 
+      `${idx + 1}. *${i.name}* (50ml Bottle)\n   • Quantity: ${i.quantity}\n   • Price: PKR ${(i.price * i.quantity).toLocaleString()}`
+    ).join('\n\n');
 
-    let pmDetails = pm;
-    if (pm === 'EasyPaisa') pmDetails += ' (Atiqa Tayyab - 03403256108)';
-    if (pm === 'JazzCash') pmDetails += ' (Shazia Ishaq - 03403256108)';
-    if (trxId) pmDetails += `\nTRX ID / Ref: ${trxId}`;
+    const discountNotice = this.appliedDiscount > 0 ? `\n• Discount Applied: -PKR ${this.appliedDiscount.toLocaleString()}` : '';
+    const notesNotice = notes ? `\n• Delivery Note / Instructions: ${notes}` : '';
+
+    let paymentMethodText = pm;
+    if (pm === 'Cash on Delivery') {
+      paymentMethodText = 'Cash on Delivery (Pay cash when parcel arrives at your door)';
+    } else if (pm === 'EasyPaisa') {
+      paymentMethodText = 'EasyPaisa (Sent to Account: Atiqa Tayyab - 03403256108)';
+    } else if (pm === 'JazzCash') {
+      paymentMethodText = 'JazzCash (Sent to Account: Shazia Ishaq - 03403256108)';
+    }
+
+    let paymentExtraDetails = '';
+    if (trxId) {
+      paymentExtraDetails += `\n• Transaction / Trx ID: ${trxId}`;
+    }
     if (this.attachedSS) {
-      pmDetails += `\n📸 Payment Proof (SS): Attached with Order Docket ✓ (Saved to Store)`;
+      paymentExtraDetails += `\n• Payment Screenshot: Uploaded with order ✓`;
     } else if (pm !== 'Cash on Delivery') {
-      pmDetails += `\n📸 Payment Proof (SS): Sending screenshot in this WhatsApp chat`;
+      paymentExtraDetails += `\n• Payment Screenshot: Sending screenshot here in WhatsApp`;
     }
 
     const waMessage = 
-`CHUDHARY PARFUMS • ORDER ACQUISITION
-Docket: ${orderId}
-----------------------------------------
-Patron: ${name}
-Phone: ${phone}
-City: ${city}
-Destination: ${address}${notesNotice}
-----------------------------------------
-CREATIONS ORDERED:
+`✨ *NEW ORDER - CHUDHARY PERFUMES* ✨
+
+Hello! I have placed an order on your website. Here are my complete order details:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 *ORDER INFORMATION*
+• *Order Number:* ${orderId}
+• *Tracking ID:* ${trackingNo}
+• *Date:* ${dateStr}
+
+👤 *CUSTOMER DETAILS*
+• *Customer Name:* ${name}
+• *Phone Number:* ${phone}
+• *City:* ${city}
+• *Delivery Address:* ${address}${notesNotice}
+
+🛍️ *ITEMS ORDERED*
 ${itemsFormatted}
 
-Subtotal: PKR ${subtotal.toLocaleString()}${discountNotice}
-Total Due: PKR ${finalTotal.toLocaleString()}
-Settlement Method: ${pmDetails}
-Dispatch Service: Insured PostEx Courier
-----------------------------------------
-Kindly confirm dispatch docket. Thank you.`;
+💰 *PAYMENT & BILL DETAILS*
+• Items Total: PKR ${subtotal.toLocaleString()}${discountNotice}
+• Delivery Charges: FREE (Free Home Delivery Across Pakistan)
+• *Total Bill to Pay: PKR ${finalTotal.toLocaleString()}*
+• *Payment Method:* ${paymentMethodText}${paymentExtraDetails}
+
+🚚 *DELIVERY DETAILS*
+• Courier Service: PostEx Express Courier
+• Estimated Delivery: 2 to 4 Working Days
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Please confirm my order and let me know when it will be delivered. Thank you!`;
 
     const waUrl = `https://api.whatsapp.com/send?phone=923403256108&text=${encodeURIComponent(waMessage)}`;
 
@@ -556,7 +582,7 @@ Kindly confirm dispatch docket. Thank you.`;
     this.ssFileName = null;
 
     if (window.showToast) {
-      window.showToast(`Order ${orderId} Submitted! Connecting to WhatsApp Concierge...`, 'success');
+      window.showToast(`Order ${orderId} Placed Successfully! Opening WhatsApp to confirm...`, 'success');
     }
 
     // 7. Redirect to WhatsApp
