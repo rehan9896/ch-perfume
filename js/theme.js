@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHAUDHARY PARFUMS (Chaudhary Parfums Lahore)
+   CHUDHARY PARFUMS (Chudhary Parfums Pakistan)
    LIVE ATELIER THEME & PALETTE MANAGER
    Supports 4 Haute Parfumerie Aesthetics with Instant Real-Time Switching
    ========================================================================== */

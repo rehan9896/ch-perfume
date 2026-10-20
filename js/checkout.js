@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHAUDHARY PARFUMS (Pakistan)
+   CHUDHARY PARFUMS (Pakistan)
    ATELIER CLIENT CHECKOUT & DIRECT CONCIERGE DISPATCH ENGINE
    ========================================================================== */
 
@@ -530,7 +530,7 @@ const CheckoutManager = {
     }
 
     const waMessage = 
-`CHAUDHARY PARFUMS • ORDER ACQUISITION
+`CHUDHARY PARFUMS • ORDER ACQUISITION
 Docket: ${orderId}
 ----------------------------------------
 Patron: ${name}
