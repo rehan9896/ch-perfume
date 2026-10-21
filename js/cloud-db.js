@@ -301,12 +301,27 @@ const CloudDB = {
      2. REAL-TIME INVENTORY SYNCHRONIZATION
      -------------------------------------------------------------------------- */
 
+  getProductImage(id = '', name = '') {
+    const s = `${id} ${name}`.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (s.includes('blackcrown')) return 'assets/images/products/black_crown.png';
+    if (s.includes('elitetouch')) return 'assets/images/products/elite_touch.png';
+    if (s.includes('boldrush')) return 'assets/images/products/bold_rush.png';
+    if (s.includes('freshaura')) return 'assets/images/products/fresh_aura.png';
+    if (s.includes('softbloom')) return 'assets/images/products/soft_bloom.png';
+    if (s.includes('forcemist')) return 'assets/images/products/force_mist.png';
+    if (s.includes('amber')) return 'assets/images/products/amber_sultan.png';
+    if (s.includes('oud') || s.includes('royal')) return 'assets/images/products/oud_royal.png';
+    if (s.includes('rose') || s.includes('velvet')) return 'assets/images/products/velvet_rose.png';
+    return 'assets/images/products/black_crown.png';
+  },
+
   // Retrieve current inventory stock
   async getInventory(defaultInv = []) {
     const cfg = this.getConfig();
     if (!cfg.enabled) {
       try {
-        return JSON.parse(localStorage.getItem('cp_inventory')) || defaultInv;
+        const cached = JSON.parse(localStorage.getItem('cp_inventory')) || defaultInv;
+        return cached.filter(r => !String(r.id || '').toUpperCase().startsWith('CP-'));
       } catch(e) {
         return defaultInv;
       }
@@ -321,13 +336,16 @@ const CloudDB = {
       if (res.ok) {
         const rows = await res.json();
         if (rows && rows.length > 0) {
-          const cloudInv = rows.map(r => ({
-            id: r.id,
-            name: r.name,
-            price: Number(r.price),
-            stock: Number(r.stock),
-            category: r.category
-          }));
+          const cloudInv = rows
+            .filter(r => !String(r.id || '').toUpperCase().startsWith('CP-'))
+            .map(r => ({
+              id: r.id,
+              name: r.name,
+              price: Number(r.price),
+              stock: Number(r.stock),
+              category: r.category,
+              image: r.image || this.getProductImage(r.id, r.name)
+            }));
           localStorage.setItem('cp_inventory', JSON.stringify(cloudInv));
           return cloudInv;
         }
@@ -337,7 +355,8 @@ const CloudDB = {
     }
 
     try {
-      return JSON.parse(localStorage.getItem('cp_inventory')) || defaultInv;
+      const cached = JSON.parse(localStorage.getItem('cp_inventory')) || defaultInv;
+      return cached.filter(r => !String(r.id || '').toUpperCase().startsWith('CP-'));
     } catch(e) {
       return defaultInv;
     }

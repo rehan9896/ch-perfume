@@ -198,33 +198,73 @@ const ShopManager = {
     this.renderProducts();
   },
 
+  getProductImage(id = '', name = '') {
+    const s = `${id} ${name}`.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (s.includes('blackcrown')) return 'assets/images/products/black_crown.png';
+    if (s.includes('elitetouch')) return 'assets/images/products/elite_touch.png';
+    if (s.includes('boldrush')) return 'assets/images/products/bold_rush.png';
+    if (s.includes('freshaura')) return 'assets/images/products/fresh_aura.png';
+    if (s.includes('softbloom')) return 'assets/images/products/soft_bloom.png';
+    if (s.includes('forcemist')) return 'assets/images/products/force_mist.png';
+    if (s.includes('amber')) return 'assets/images/products/amber_sultan.png';
+    if (s.includes('oud') || s.includes('royal')) return 'assets/images/products/oud_royal.png';
+    if (s.includes('rose') || s.includes('velvet')) return 'assets/images/products/velvet_rose.png';
+    return 'assets/images/products/black_crown.png';
+  },
+
+  sanitizeLocalInventory() {
+    try {
+      const inv = JSON.parse(localStorage.getItem('cp_inventory'));
+      if (Array.isArray(inv)) {
+        const cleaned = inv.filter(item => {
+          if (!item || !item.name) return false;
+          const id = String(item.id || '').toUpperCase();
+          return !id.startsWith('CP-');
+        });
+        if (cleaned.length !== inv.length) {
+          localStorage.setItem('cp_inventory', JSON.stringify(cleaned));
+        }
+      }
+    } catch(e) {}
+  },
+
   getFilteredProducts() {
+    this.sanitizeLocalInventory();
     let catalog = [...ProductCatalog];
     try {
       const inv = JSON.parse(localStorage.getItem('cp_inventory')) || [];
       if (inv.length > 0) {
         inv.forEach(item => {
-          const existing = catalog.find(c => c.id === item.id);
+          if (!item || !item.name) return;
+          if (String(item.id || '').toUpperCase().startsWith('CP-')) return;
+
+          const slug = (item.id || item.name).toLowerCase().replace(/[^a-z0-9]/g, '-');
+          const existing = catalog.find(c => 
+            c.id === item.id || 
+            c.id === slug || 
+            (c.name && c.name.toLowerCase() === item.name.toLowerCase())
+          );
+
           if (existing) {
-            if (item.price && item.price >= 1500) existing.price = item.price;
+            if (item.price && item.price >= 1000) existing.price = item.price;
             if (item.stock !== undefined) existing.stock = item.stock;
             if (item.image) existing.image = item.image;
             if (item.notes) existing.notes = item.notes;
           } else {
-            catalog.unshift({
-              id: item.id || item.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+            catalog.push({
+              id: slug,
               name: item.name,
               category: item.category || 'Perfumes',
-              gender: item.gender || 'Unisex',
-              price: item.price || 1990,
-              originalPrice: (item.price || 1990) + 900,
+              gender: item.gender || (item.category && item.category.toLowerCase().includes('women') ? 'Women' : item.category && item.category.toLowerCase().includes('men') ? 'Men' : 'Unisex'),
+              price: item.price || 2000,
+              originalPrice: (item.price || 2000) + 900,
               discount: '30% OFF',
               badge: 'NEW',
               rating: 5.0,
               reviewsCount: 50,
               notes: item.notes || 'Luxury Fragrance Oils',
               scentFamily: 'fresh',
-              image: item.image || 'assets/images/products/black_crown.png',
+              image: item.image || this.getProductImage(slug, item.name),
               description: item.notes || 'Handcrafted Eau de Parfum Made in Pakistan.'
             });
           }
@@ -269,7 +309,8 @@ const ShopManager = {
   },
 
   renderProducts() {
-    const grid = document.querySelector('.product-grid');
+    const isShopPage = !!document.querySelector('.shop-cat-pills-wrap') || window.location.pathname.includes('shop.html');
+    const grid = isShopPage ? document.querySelector('.product-grid') : null;
     if (!grid) return;
 
     const filtered = this.getFilteredProducts();

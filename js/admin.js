@@ -18,14 +18,28 @@ const AdminManager = {
   // Initial Sample Orders with PostEx Courier Consignment Tracking
   defaultOrders: [],
 
+  getProductImage(id = '', name = '') {
+    const s = `${id} ${name}`.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (s.includes('blackcrown')) return 'assets/images/products/black_crown.png';
+    if (s.includes('elitetouch')) return 'assets/images/products/elite_touch.png';
+    if (s.includes('boldrush')) return 'assets/images/products/bold_rush.png';
+    if (s.includes('freshaura')) return 'assets/images/products/fresh_aura.png';
+    if (s.includes('softbloom')) return 'assets/images/products/soft_bloom.png';
+    if (s.includes('forcemist')) return 'assets/images/products/force_mist.png';
+    if (s.includes('amber')) return 'assets/images/products/amber_sultan.png';
+    if (s.includes('oud') || s.includes('royal')) return 'assets/images/products/oud_royal.png';
+    if (s.includes('rose') || s.includes('velvet')) return 'assets/images/products/velvet_rose.png';
+    return 'assets/images/products/black_crown.png';
+  },
+
   // Initial Inventory for all Active Fragrances (Set to 15 Units Each)
   defaultInventory: [
-    { id: 'black-crown', name: 'Black Crown', category: 'Men Perfumes', price: 2200, stock: 15 },
-    { id: 'elite-touch', name: 'Elite Touch', category: 'Men Perfumes', price: 1850, stock: 15 },
-    { id: 'bold-rush', name: 'Bold Rush', category: 'Women Perfumes', price: 1900, stock: 15 },
-    { id: 'fresh-aura', name: 'Fresh Aura', category: 'Women Perfumes', price: 2100, stock: 15 },
-    { id: 'soft-bloom', name: 'Soft Bloom', category: 'Women Perfumes', price: 1750, stock: 15 },
-    { id: 'force-mist', name: 'Force Mist', category: 'Unisex Perfumes', price: 2000, stock: 15 }
+    { id: 'black-crown', name: 'Black Crown', category: 'Men Perfumes', price: 2200, stock: 15, image: 'assets/images/products/black_crown.png' },
+    { id: 'elite-touch', name: 'Elite Touch', category: 'Men Perfumes', price: 1850, stock: 15, image: 'assets/images/products/elite_touch.png' },
+    { id: 'bold-rush', name: 'Bold Rush', category: 'Women Perfumes', price: 1900, stock: 15, image: 'assets/images/products/bold_rush.png' },
+    { id: 'fresh-aura', name: 'Fresh Aura', category: 'Women Perfumes', price: 2100, stock: 15, image: 'assets/images/products/fresh_aura.png' },
+    { id: 'soft-bloom', name: 'Soft Bloom', category: 'Women Perfumes', price: 1750, stock: 15, image: 'assets/images/products/soft_bloom.png' },
+    { id: 'force-mist', name: 'Force Mist', category: 'Unisex Perfumes', price: 2000, stock: 15, image: 'assets/images/products/force_mist.png' }
   ],
 
   init() {
@@ -341,7 +355,7 @@ const AdminManager = {
         <td style="padding: 12px; font-weight: 700; color: var(--brand-gold);">${p.id}</td>
         <td style="padding: 12px; font-weight: 700; color: var(--text-primary);">
           <div style="display:flex; align-items:center; gap:10px;">
-            <img src="${p.image || 'assets/images/products/black_crown.png'}" alt="${p.name}" style="width:36px; height:36px; object-fit:cover; border-radius:6px;">
+            <img src="${p.image || this.getProductImage(p.id, p.name)}" alt="${p.name}" style="width:36px; height:36px; object-fit:cover; border-radius:6px;">
             <div>
               <div>${p.name}</div>
               <div style="font-size:0.75rem; color:var(--text-muted); font-weight:400;">${p.notes || '50ml EDP'}</div>
@@ -398,16 +412,25 @@ const AdminManager = {
       localStorage.setItem(this.INVENTORY_KEY, JSON.stringify(this.defaultInventory));
     } else {
       try {
-        const inv = JSON.parse(rawInv);
-        let updated = false;
+        let inv = JSON.parse(rawInv) || [];
+        const filtered = inv.filter(p => !String(p.id || '').toUpperCase().startsWith('CP-'));
+        let updated = filtered.length !== inv.length;
+        inv = filtered;
+
         this.defaultInventory.forEach(def => {
           const found = inv.find(p => p.id === def.id || p.name === def.name);
           if (!found) {
             inv.push(def);
             updated = true;
-          } else if (found.stock > 15 || found.stock === 150 || found.stock === 149) {
-            found.stock = 15;
-            updated = true;
+          } else {
+            if (!found.image) {
+              found.image = def.image;
+              updated = true;
+            }
+            if (found.stock > 15 || found.stock === 150 || found.stock === 149) {
+              found.stock = 15;
+              updated = true;
+            }
           }
         });
         if (updated) localStorage.setItem(this.INVENTORY_KEY, JSON.stringify(inv));
@@ -583,11 +606,12 @@ create policy "Allow all on inventory" on inventory for all using (true) with ch
 
 -- 4. Initial Stock
 insert into inventory (id, name, price, stock, category) values
-('CP-01', 'Black Crown', 24000, 150, 'Private Reserve'),
-('CP-02', 'Bold Rush', 18500, 150, 'Signature Blend'),
-('CP-03', 'Fresh Aura', 18500, 150, 'Private Reserve'),
-('CP-04', 'Golden Dust', 21500, 150, 'Private Reserve'),
-('CP-05', 'Royal Mirage', 21500, 150, 'Private Reserve')
+('black-crown', 'Black Crown', 2200, 15, 'Men Perfumes'),
+('elite-touch', 'Elite Touch', 1850, 15, 'Men Perfumes'),
+('bold-rush', 'Bold Rush', 1900, 15, 'Women Perfumes'),
+('fresh-aura', 'Fresh Aura', 2100, 15, 'Women Perfumes'),
+('soft-bloom', 'Soft Bloom', 1750, 15, 'Women Perfumes'),
+('force-mist', 'Force Mist', 2000, 15, 'Unisex Perfumes')
 on conflict (id) do nothing;</pre>
         </div>
 
