@@ -636,7 +636,7 @@ function renderTrackerPrompt(prefillId = '') {
   `;
 }
 
-window.executeOrderTracking = function(queryId) {
+window.executeOrderTracking = async function(queryId) {
   const cleanInput = (queryId || '').trim();
   if (!cleanInput) return;
 
@@ -651,15 +651,25 @@ window.executeOrderTracking = function(queryId) {
   try {
     const placed = JSON.parse(localStorage.getItem('cp_placed_orders')) || [];
     const history = JSON.parse(localStorage.getItem('cp_order_history')) || [];
-    const combined = [...placed, ...history];
-    const seen = new Set();
-    orders = combined.filter(o => {
-      const id = o.id || o.orderId;
-      if (!id || seen.has(id)) return false;
-      seen.add(id);
-      return true;
-    });
+    orders = [...placed, ...history];
   } catch(e) {}
+
+  // Fetch real-time cloud orders if Supabase is connected
+  if (window.CloudDB && window.CloudDB.isConnected()) {
+    try {
+      const cloudOrders = await window.CloudDB.getOrders();
+      orders = [...orders, ...cloudOrders];
+    } catch(e) {}
+  }
+
+  // Deduplicate orders
+  const seen = new Set();
+  orders = orders.filter(o => {
+    const id = o.id || o.orderId;
+    if (!id || seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
 
   // Find matching real-time order
   const order = orders.find(o => {

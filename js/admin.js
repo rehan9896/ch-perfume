@@ -480,6 +480,247 @@ const AdminManager = {
     this.renderCourierCard();
   },
 
+  previousOrderCount: null,
+
+  playNotificationSound() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15); // A5
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.45);
+    } catch(e) {}
+  },
+
+  renderCloudDbCard() {
+    const cardEl = document.getElementById('admin-cloud-db-card');
+    if (!cardEl) return;
+
+    const isConnected = window.CloudDB && window.CloudDB.isConnected();
+    const cfg = window.CloudDB ? window.CloudDB.getConfig() : { url: '', key: '' };
+
+    cardEl.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; background:${isConnected ? 'rgba(46, 204, 113, 0.12)' : 'rgba(245, 158, 11, 0.12)'}; border-radius:8px; border:1px solid ${isConnected ? '#2ecc71' : 'var(--brand-gold)'}; color:${isConnected ? '#2ecc71' : 'var(--brand-gold)'};">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <h4 style="font-size:1.1rem; font-weight:700; color:var(--text-primary); margin:0;">Supabase Real-Time Cloud Database</h4>
+              <span class="badge" style="background:${isConnected ? 'rgba(46, 204, 113, 0.15)' : 'rgba(245, 158, 11, 0.15)'}; color:${isConnected ? '#2ecc71' : '#f59e0b'}; border:1px solid ${isConnected ? '#2ecc71' : '#f59e0b'}; font-size:0.75rem;">
+                ${isConnected ? '🟢 Live Real-Time Active' : '🟡 Setup Required'}
+              </span>
+            </div>
+            <div style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">
+              ${isConnected 
+                ? `Endpoint: <strong style="color:var(--brand-gold);">${cfg.url}</strong> &nbsp;•&nbsp; Customer orders & stock save in real-time across all devices.` 
+                : 'Connect your free Supabase database so customer orders from any device immediately appear here in your admin panel.'}
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="AdminManager.openCloudDbModal()" style="font-size:0.82rem; padding:8px 16px;">
+            ${isConnected ? '⚙️ Manage Cloud Sync' : '⚡ Connect Supabase Cloud (2 Min)'}
+          </button>
+          ${isConnected ? `
+            <button class="btn btn-outline" onclick="AdminManager.syncCloudDbNow()" style="font-size:0.82rem; padding:8px 16px; border-color:var(--brand-gold); color:var(--brand-gold);">
+              🔄 Sync Now
+            </button>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  },
+
+  openCloudDbModal() {
+    const modal = document.querySelector('.quick-view-modal');
+    const overlay = document.querySelector('.modal-overlay');
+    if (!modal || !overlay) return;
+
+    const cfg = window.CloudDB ? window.CloudDB.getConfig() : { url: '', key: '' };
+
+    modal.querySelector('.quick-view-body').innerHTML = `
+      <div style="padding:10px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <span class="badge" style="background:rgba(46, 204, 113, 0.15); color:#2ecc71; border:1px solid #2ecc71; font-weight:700;">SUPABASE POSTGRESQL</span>
+          <h3 style="font-family:var(--font-heading); font-size:1.5rem; color:var(--text-primary); margin:0;">Supabase Real-Time Cloud Sync</h3>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:20px; line-height:1.6;">
+          Connect your free Supabase database. When any customer orders on your boutique website, their details are instantly saved to Supabase and synced straight to this admin panel in real-time.
+        </p>
+
+        <!-- Step 1: SQL Schema Helper -->
+        <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:8px; padding:16px; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:var(--text-primary); font-size:0.88rem;">Step 1: Run SQL in Supabase SQL Editor</strong>
+            <button type="button" onclick="AdminManager.copySupabaseSql()" class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem; border-color:var(--brand-gold); color:var(--brand-gold);">
+              📋 Copy SQL Code
+            </button>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:8px;">
+            Create a free project at <a href="https://supabase.com" target="_blank" style="color:var(--brand-gold); text-decoration:underline;">supabase.com</a>, open <strong>SQL Editor</strong>, paste this code, and click <strong>RUN</strong>:
+          </p>
+          <pre id="supabase-sql-snippet" style="background:#0a0a0c; padding:12px; border-radius:6px; font-size:0.72rem; color:#38bdf8; overflow-x:auto; max-height:140px; font-family:monospace; line-height:1.4;">-- 1. Create Orders Table
+create table if not exists orders (
+  id text primary key,
+  order_id text,
+  customer_name text,
+  phone text,
+  email text,
+  city text,
+  address text,
+  notes text,
+  items text,
+  total numeric,
+  payment_method text,
+  payment_title text,
+  trx_id text,
+  payment_proof text,
+  date text,
+  status text default 'Pending COD',
+  courier_partner text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- 2. Create Inventory Table
+create table if not exists inventory (
+  id text primary key,
+  name text,
+  price numeric,
+  stock integer,
+  category text,
+  updated_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+-- 3. Enable Public Access (RLS Policies)
+alter table orders enable row level security;
+alter table inventory enable row level security;
+
+create policy "Allow all on orders" on orders for all using (true) with check (true);
+create policy "Allow all on inventory" on inventory for all using (true) with check (true);
+
+-- 4. Initial Stock
+insert into inventory (id, name, price, stock, category) values
+('CP-01', 'Black Crown', 24000, 150, 'Private Reserve'),
+('CP-02', 'Bold Rush', 18500, 150, 'Signature Blend'),
+('CP-03', 'Fresh Aura', 18500, 150, 'Private Reserve'),
+('CP-04', 'Golden Dust', 21500, 150, 'Private Reserve'),
+('CP-05', 'Royal Mirage', 21500, 150, 'Private Reserve')
+on conflict (id) do nothing;</pre>
+        </div>
+
+        <!-- Step 2: Form to paste URL & Key -->
+        <form id="admin-cloud-form" onsubmit="AdminManager.handleCloudDbSubmit(event)" style="display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">
+              Step 2: Supabase Project URL:
+            </label>
+            <input type="url" id="cloud-url-input" value="${cfg.url || ''}" placeholder="https://your-project-id.supabase.co" required style="width:100%; padding:10px 14px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-size:0.9rem;">
+            <div style="font-size:0.74rem; color:var(--text-muted); margin-top:4px;">Find in Supabase: Project Settings → API → Project URL</div>
+          </div>
+
+          <div>
+            <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">
+              Supabase Project API Key (anon / public):
+            </label>
+            <input type="text" id="cloud-key-input" value="${cfg.key || ''}" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." required style="width:100%; padding:10px 14px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-size:0.9rem;">
+            <div style="font-size:0.74rem; color:var(--text-muted); margin-top:4px;">Find in Supabase: Project Settings → API → Project API keys → anon public</div>
+          </div>
+
+          <div id="cloud-test-status" style="display:none; padding:10px; border-radius:6px; font-size:0.82rem; font-weight:600;"></div>
+
+          <div style="display:flex; gap:12px; margin-top:10px; flex-wrap:wrap;">
+            <button type="submit" class="btn btn-primary" style="flex:1;">Save & Verify Supabase Connection</button>
+            <button type="button" class="btn btn-outline" onclick="ShopManager.closeQuickView()" style="padding:10px 20px;">Cancel</button>
+          </div>
+        </form>
+      </div>
+    `;
+
+    modal.classList.add('active');
+    overlay.classList.add('active');
+  },
+
+  copySupabaseSql() {
+    const el = document.getElementById('supabase-sql-snippet');
+    if (el) {
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        if (window.showToast) window.showToast('SQL Code Copied to Clipboard!', 'success');
+      }).catch(() => {
+        if (window.showToast) window.showToast('Please select and copy the SQL code manually.', 'info');
+      });
+    }
+  },
+
+  async handleCloudDbSubmit(e) {
+    e.preventDefault();
+    const url = document.getElementById('cloud-url-input').value.trim();
+    const key = document.getElementById('cloud-key-input').value.trim();
+    const statusEl = document.getElementById('cloud-test-status');
+
+    if (statusEl) {
+      statusEl.style.display = 'block';
+      statusEl.style.background = 'rgba(56, 189, 248, 0.15)';
+      statusEl.style.color = '#38bdf8';
+      statusEl.style.border = '1px solid #38bdf8';
+      statusEl.textContent = 'Testing connection to Supabase database...';
+    }
+
+    const test = await window.CloudDB.testConnection(url, key);
+
+    if (test.ok) {
+      window.CloudDB.saveConfig(url, key);
+      if (statusEl) {
+        statusEl.style.background = 'rgba(46, 204, 113, 0.15)';
+        statusEl.style.color = '#2ecc71';
+        statusEl.style.border = '1px solid #2ecc71';
+        statusEl.textContent = '✓ Successfully connected to Supabase Cloud Database!';
+      }
+      setTimeout(async () => {
+        ShopManager.closeQuickView();
+        this.renderCloudDbCard();
+        await this.syncCloudDbNow();
+        if (window.showToast) window.showToast('Supabase Real-Time Cloud Sync Activated!', 'success');
+      }, 900);
+    } else {
+      if (statusEl) {
+        statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
+        statusEl.style.color = '#ef4444';
+        statusEl.style.border = '1px solid #ef4444';
+        statusEl.textContent = `Connection error: ${test.error}. Please ensure the tables have been created in Supabase SQL editor.`;
+      }
+    }
+  },
+
+  async syncCloudDbNow() {
+    if (!window.CloudDB || !window.CloudDB.isConnected()) {
+      if (window.showToast) window.showToast('Supabase not configured yet.', 'info');
+      return;
+    }
+
+    try {
+      const orders = await window.CloudDB.getOrders();
+      await window.CloudDB.getInventory(this.defaultInventory);
+
+      this.previousOrderCount = orders.length;
+      this.renderMetrics();
+      this.renderOrdersTable();
+      this.renderInventoryTable();
+      if (window.showToast) window.showToast(`Synced ${orders.length} real-time orders from Supabase!`, 'success');
+    } catch(err) {
+      console.error('Manual sync error:', err);
+    }
+  },
+
   renderCourierCard() {
     const cardEl = document.getElementById('admin-courier-card');
     if (!cardEl) return;
@@ -545,15 +786,43 @@ const AdminManager = {
     if (adminContent) adminContent.style.display = 'block';
 
     this.renderMetrics();
+    this.renderCloudDbCard();
     this.renderCourierCard();
     this.renderOrdersTable();
     this.renderInventoryTable();
     this.loadSiteConfig();
     this.bindEvents();
 
+    // Initial Supabase Cloud Fetch if configured
+    if (window.CloudDB && window.CloudDB.isConnected()) {
+      window.CloudDB.getOrders().then(orders => {
+        this.previousOrderCount = orders.length;
+        this.renderMetrics();
+        this.renderOrdersTable();
+      }).catch(e => console.warn('Supabase fetch error:', e));
+
+      window.CloudDB.getInventory(this.defaultInventory).then(() => {
+        this.renderInventoryTable();
+      }).catch(e => console.warn('Supabase inventory error:', e));
+    }
+
     // Start 2.5-second Real-Time Live Polling Loop
     if (!this.pollingInterval) {
-      this.pollingInterval = setInterval(() => {
+      this.pollingInterval = setInterval(async () => {
+        if (window.CloudDB && window.CloudDB.isConnected()) {
+          try {
+            const currentOrders = await window.CloudDB.getOrders();
+            if (this.previousOrderCount !== null && currentOrders.length > this.previousOrderCount) {
+              const newestOrder = currentOrders[0];
+              this.playNotificationSound();
+              if (window.showToast) {
+                window.showToast(`🔔 New Order! #${newestOrder.id} from ${newestOrder.customerName} (PKR ${newestOrder.total.toLocaleString()})`, 'success');
+              }
+            }
+            this.previousOrderCount = currentOrders.length;
+          } catch(e) {}
+        }
+
         this.renderMetrics();
         this.renderOrdersTable();
         this.renderInventoryTable();
@@ -938,6 +1207,11 @@ const AdminManager = {
       order.status = newStatus;
       this.saveOrders(orders);
 
+      // Real-Time Cloud Database Update (Supabase)
+      if (window.CloudDB) {
+        window.CloudDB.updateOrderStatus(orderId, newStatus);
+      }
+
       // Sync real-time with customer order history
       try {
         const hist = JSON.parse(localStorage.getItem('cp_order_history')) || [];
@@ -956,6 +1230,12 @@ const AdminManager = {
     if (confirm(`Are you sure you want to delete Order ${orderId}?`)) {
       const orders = this.getOrders().filter(o => o.id !== orderId);
       this.saveOrders(orders);
+
+      // Real-Time Cloud Database Delete (Supabase)
+      if (window.CloudDB) {
+        window.CloudDB.deleteOrder(orderId);
+      }
+
       if (window.showToast) window.showToast(`Order ${orderId} deleted`, 'info');
     }
   },
@@ -966,6 +1246,12 @@ const AdminManager = {
     if (item) {
       item.stock = Math.max(0, item.stock + amount);
       this.saveInventory(inv);
+
+      // Real-Time Cloud Database Stock Update (Supabase)
+      if (window.CloudDB) {
+        window.CloudDB.updateStock(productId, item.stock);
+      }
+
       if (window.showToast) window.showToast(`Stock updated for ${item.name}: ${item.stock} units`, 'success');
     }
   },
@@ -975,11 +1261,11 @@ const AdminManager = {
     const sampleNames = ['Bilal Ahmed', 'Zainab Bibi', 'Farhan Saeed', 'Sara Tariq', 'Omer Chaudhry'];
     const sampleCities = ['Lahore', 'Faisalabad', 'Multan', 'Rawalpindi', 'Peshawar', 'Sialkot'];
     const samplePerfumes = [
-      { name: 'Black Crown', price: 2200 },
-      { name: 'Elite Touch', price: 1850 },
-      { name: 'Bold Rush', price: 1900 },
-      { name: 'Fresh Aura', price: 2100 },
-      { name: 'Force Mist', price: 2000 }
+      { name: 'Black Crown', price: 24000 },
+      { name: 'Bold Rush', price: 18500 },
+      { name: 'Fresh Aura', price: 18500 },
+      { name: 'Golden Dust', price: 21500 },
+      { name: 'Royal Mirage', price: 21500 }
     ];
 
     const randomName = sampleNames[Math.floor(Math.random() * sampleNames.length)];
@@ -997,7 +1283,7 @@ const AdminManager = {
       phone: `032${Math.floor(1000000 + Math.random() * 9000000)}`,
       city: randomCity,
       address: `House #${Math.floor(1 + Math.random()*200)}, Street #${Math.floor(1 + Math.random()*15)}, ${randomCity}`,
-      items: `${randomPerfume.name} (100ml) × 1`,
+      items: `${randomPerfume.name} (50ml) × 1`,
       total: randomPerfume.price,
       paymentMethod: 'Cash on Delivery',
       date: timeStr,
@@ -1009,7 +1295,13 @@ const AdminManager = {
     const orders = this.getOrders();
     orders.unshift(newOrder);
     this.saveOrders(orders);
-    if (window.showToast) window.showToast(`New Live Order ${newOrder.id} (${trackingCN}) booked via PostEx Courier!`, 'success');
+
+    // Sync to Cloud
+    if (window.CloudDB && window.CloudDB.isConnected()) {
+      window.CloudDB.saveOrder(newOrder);
+    }
+
+    if (window.showToast) window.showToast(`New Live Order ${newOrder.id} created & saved!`, 'success');
   },
 
   bindEvents() {

@@ -488,7 +488,7 @@ const CheckoutManager = {
       courierPartner: 'PostEx Courier'
     };
 
-    // 2. Save Live Order to Admin Tracking (cp_placed_orders)
+    // 2. Save Live Order to Admin Tracking & Supabase Cloud Database
     try {
       const placedOrders = JSON.parse(localStorage.getItem('cp_placed_orders')) || [];
       placedOrders.unshift(newOrder);
@@ -506,6 +506,12 @@ const CheckoutManager = {
       });
       localStorage.setItem('cp_inventory', JSON.stringify(inv));
     } catch(err) {}
+
+    // 4. Real-Time Cloud Database Persistence (Supabase)
+    if (window.CloudDB) {
+      window.CloudDB.saveOrder(newOrder).catch(e => console.warn('Cloud sync error:', e));
+      window.CloudDB.deductStock(items).catch(e => console.warn('Cloud stock error:', e));
+    }
 
     // 4. Save to Customer History (cp_order_history)
     try {
