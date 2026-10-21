@@ -13,8 +13,19 @@ const CloudDB = {
   getConfig() {
     try {
       const cfg = JSON.parse(localStorage.getItem(this.CONFIG_KEY)) || {};
-      const url = (cfg.url || this.DEFAULT_URL || window.CH_SUPABASE_URL || '').trim().replace(/\/+$/, '');
-      const key = (cfg.key || this.DEFAULT_KEY || window.CH_SUPABASE_KEY || '').trim();
+      let url = (cfg.url || '').trim().replace(/\/+$/, '');
+      let key = (cfg.key || '').trim();
+
+      // Ensure valid URL fallback
+      if (!url || !url.startsWith('https://')) {
+        url = this.DEFAULT_URL;
+      }
+
+      // Ensure valid JWT key fallback (Supabase anon key is > 50 chars)
+      if (!key || key.length < 50) {
+        key = this.DEFAULT_KEY;
+      }
+
       return {
         url: url,
         key: key,
@@ -27,9 +38,21 @@ const CloudDB = {
 
   // Save Supabase Configuration
   saveConfig(url, key) {
-    const cleanUrl = (url || '').trim().replace(/\/+$/, '');
-    const cleanKey = (key || '').trim();
+    const cleanUrl = (url || this.DEFAULT_URL).trim().replace(/\/+$/, '');
+    const cleanKey = (key || this.DEFAULT_KEY).trim();
     localStorage.setItem(this.CONFIG_KEY, JSON.stringify({ url: cleanUrl, key: cleanKey }));
+  },
+
+  init() {
+    try {
+      const cfg = this.getConfig();
+      if (cfg.enabled) {
+        const stored = JSON.parse(localStorage.getItem(this.CONFIG_KEY)) || {};
+        if (!stored.key || stored.key.length < 50 || !stored.url) {
+          this.saveConfig(cfg.url, cfg.key);
+        }
+      }
+    } catch(e) {}
   },
 
   isConnected() {
@@ -333,3 +356,8 @@ const CloudDB = {
     }
   }
 };
+
+window.CloudDB = CloudDB;
+if (typeof CloudDB.init === 'function') {
+  CloudDB.init();
+}

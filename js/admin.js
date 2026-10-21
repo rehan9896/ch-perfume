@@ -165,20 +165,6 @@ const AdminManager = {
 
   SITE_CONFIG_KEY: 'cp_site_config',
 
-  showAdminDashboard() {
-    const loginModal = document.getElementById('admin-login-modal');
-    if (loginModal) loginModal.style.display = 'none';
-
-    const adminContent = document.getElementById('admin-main-content');
-    if (adminContent) adminContent.style.display = 'block';
-
-    this.renderMetrics();
-    this.renderCourierCard();
-    this.renderOrdersTable();
-    this.renderInventoryTable();
-    this.loadSiteConfig();
-    this.bindEvents();
-  },
 
   loadSiteConfig() {
     try {
@@ -503,6 +489,10 @@ const AdminManager = {
     const cardEl = document.getElementById('admin-cloud-db-card');
     if (!cardEl) return;
 
+    if (window.CloudDB && typeof window.CloudDB.init === 'function') {
+      window.CloudDB.init();
+    }
+
     const isConnected = window.CloudDB && window.CloudDB.isConnected();
     const cfg = window.CloudDB ? window.CloudDB.getConfig() : { url: '', key: '' };
 
@@ -528,17 +518,33 @@ const AdminManager = {
         </div>
 
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="AdminManager.openCloudDbModal()" style="font-size:0.82rem; padding:8px 16px;">
-            ${isConnected ? '⚙️ Manage Cloud Sync' : '⚡ Connect Supabase Cloud (2 Min)'}
-          </button>
           ${isConnected ? `
+            <button class="btn btn-primary" onclick="AdminManager.openCloudDbModal()" style="font-size:0.82rem; padding:8px 16px;">
+              ⚙️ Manage Cloud Sync
+            </button>
             <button class="btn btn-outline" onclick="AdminManager.syncCloudDbNow()" style="font-size:0.82rem; padding:8px 16px; border-color:var(--brand-gold); color:var(--brand-gold);">
               🔄 Sync Now
             </button>
-          ` : ''}
+          ` : `
+            <button class="btn btn-primary" onclick="AdminManager.quickActivateCloudDb()" style="font-size:0.82rem; padding:8px 16px;">
+              ⚡ Connect Supabase Cloud (2 Min)
+            </button>
+            <button class="btn btn-outline" onclick="AdminManager.openCloudDbModal()" style="font-size:0.82rem; padding:8px 16px;">
+              ⚙️ Custom Setup
+            </button>
+          `}
         </div>
       </div>
     `;
+  },
+
+  quickActivateCloudDb() {
+    if (window.CloudDB) {
+      window.CloudDB.saveConfig(window.CloudDB.DEFAULT_URL, window.CloudDB.DEFAULT_KEY);
+      this.renderCloudDbCard();
+      this.syncCloudDbNow();
+      if (window.showToast) window.showToast('Supabase Real-Time Cloud Activated!', 'success');
+    }
   },
 
   openCloudDbModal() {
