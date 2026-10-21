@@ -605,7 +605,10 @@ create table if not exists inventory (
 alter table orders enable row level security;
 alter table inventory enable row level security;
 
+drop policy if exists "Allow all on orders" on orders;
 create policy "Allow all on orders" on orders for all using (true) with check (true);
+
+drop policy if exists "Allow all on inventory" on inventory;
 create policy "Allow all on inventory" on inventory for all using (true) with check (true);
 
 -- 4. Initial Stock
