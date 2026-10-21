@@ -10,8 +10,8 @@ const AdminManager = {
   AUTH_KEY: 'cp_admin_authenticated',
 
   // Admin Credentials
-  ADMIN_USER: 'Atiqach',
-  ADMIN_PASS: 'atiqachaimen08',
+  ADMIN_USER: 'rehan',
+  ADMIN_PASS: '9896',
 
   currentSearchQuery: '',
   currentStatusFilter: 'all',
@@ -98,9 +98,9 @@ const AdminManager = {
     const u = (user || '').trim().toLowerCase();
     const p = (pass || '').trim();
 
-    if ((u === 'atiqach' || u === 'atiqa' || u === 'admin') && p === 'atiqachaimen08') {
+    if ((u === 'rehan' || u === 'admin') && p === '9896') {
       localStorage.setItem(this.AUTH_KEY, 'true');
-      if (window.showToast) window.showToast('Welcome back, Admin!', 'success');
+      if (window.showToast) window.showToast('Welcome back, Rehan!', 'success');
       this.showAdminDashboard();
       return true;
     } else {
