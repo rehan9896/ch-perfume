@@ -1,12 +1,11 @@
 /* ==========================================================================
    Chudhary PERFUMES (Chudharyperfumes.pk)
-   EXECUTIVE ADMIN OPERATIONS & POSTEX COURIER INTEGRATION SYSTEM
+   EXECUTIVE ADMIN OPERATIONS SYSTEM
    ========================================================================== */
 
 const AdminManager = {
   ORDERS_KEY: 'cp_placed_orders',
   INVENTORY_KEY: 'cp_inventory',
-  COURIER_KEY: 'cp_courier_config',
   AUTH_KEY: 'cp_admin_authenticated',
 
   // Admin Credentials
@@ -19,24 +18,15 @@ const AdminManager = {
   // Initial Sample Orders with PostEx Courier Consignment Tracking
   defaultOrders: [],
 
-  // Initial Inventory for all 5 Active Fragrances
+  // Initial Inventory for all Active Fragrances (Set to 15 Units Each)
   defaultInventory: [
-    { id: 'black-crown', name: 'Black Crown', category: 'Men Perfumes', price: 2200, stock: 150 },
-    { id: 'elite-touch', name: 'Elite Touch', category: 'Men Perfumes', price: 1850, stock: 85 },
-    { id: 'bold-rush', name: 'Bold Rush', category: 'Women Perfumes', price: 1900, stock: 120 },
-    { id: 'fresh-aura', name: 'Fresh Aura', category: 'Women Perfumes', price: 2100, stock: 95 },
-    { id: 'soft-bloom', name: 'Soft Bloom', category: 'Women Perfumes', price: 1750, stock: 100 },
-    { id: 'force-mist', name: 'Force Mist', category: 'Unisex Perfumes', price: 2000, stock: 110 }
+    { id: 'black-crown', name: 'Black Crown', category: 'Men Perfumes', price: 2200, stock: 15 },
+    { id: 'elite-touch', name: 'Elite Touch', category: 'Men Perfumes', price: 1850, stock: 15 },
+    { id: 'bold-rush', name: 'Bold Rush', category: 'Women Perfumes', price: 1900, stock: 15 },
+    { id: 'fresh-aura', name: 'Fresh Aura', category: 'Women Perfumes', price: 2100, stock: 15 },
+    { id: 'soft-bloom', name: 'Soft Bloom', category: 'Women Perfumes', price: 1750, stock: 15 },
+    { id: 'force-mist', name: 'Force Mist', category: 'Unisex Perfumes', price: 2000, stock: 15 }
   ],
-
-  // Default PostEx Courier Integration Setup
-  defaultCourierConfig: {
-    partner: 'PostEx Courier',
-    accountNo: 'PEX-CP-PK-9896',
-    apiKey: 'POSTEX_LIVE_KEY_84920',
-    status: 'Connected',
-    latency: '24ms'
-  },
 
   init() {
     this.ensureData();
@@ -334,16 +324,16 @@ const AdminManager = {
     const inv = this.getInventory();
 
     tbody.innerHTML = inv.map(p => {
-      const maxStock = 150;
+      const maxStock = 20;
       const pct = Math.min(100, Math.round(((p.stock || 0) / maxStock) * 100));
       let barColor = '#2ecc71';
-      let statusLabel = 'Healthy Stock';
-      if (p.stock < 20) {
+      let statusLabel = `${p.stock || 0} In Stock`;
+      if (p.stock <= 3) {
         barColor = '#ef4444';
         statusLabel = 'Low Stock Alert!';
-      } else if (p.stock < 50) {
+      } else if (p.stock <= 7) {
         barColor = '#f39c12';
-        statusLabel = 'Medium Stock';
+        statusLabel = 'Limited Reserve';
       }
 
       return `
@@ -354,7 +344,7 @@ const AdminManager = {
             <img src="${p.image || 'assets/images/products/black_crown.png'}" alt="${p.name}" style="width:36px; height:36px; object-fit:cover; border-radius:6px;">
             <div>
               <div>${p.name}</div>
-              <div style="font-size:0.75rem; color:var(--text-muted); font-weight:400;">${p.notes || '100ml EDP'}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); font-weight:400;">${p.notes || '50ml EDP'}</div>
             </div>
           </div>
         </td>
@@ -372,8 +362,9 @@ const AdminManager = {
         <td style="padding: 12px; text-align: right;">
           <div style="display: flex; justify-content: flex-end; gap: 6px;">
             <button class="btn btn-outline" onclick="AdminManager.openEditPerfumeModal('${p.id}')" style="padding: 4px 10px; font-size: 0.76rem;">✏️ Edit</button>
-            <button class="btn btn-outline" onclick="AdminManager.adjustStock('${p.id}', 50)" style="padding: 4px 8px; font-size: 0.76rem;">+50</button>
-            <button class="btn btn-outline" onclick="AdminManager.adjustStock('${p.id}', -10)" style="padding: 4px 8px; font-size: 0.76rem;">-10</button>
+            <button class="btn btn-outline" onclick="AdminManager.adjustStock('${p.id}', 1)" style="padding: 4px 8px; font-size: 0.76rem;">+1</button>
+            <button class="btn btn-outline" onclick="AdminManager.adjustStock('${p.id}', -1)" style="padding: 4px 8px; font-size: 0.76rem;">-1</button>
+            <button class="btn btn-outline" onclick="AdminManager.adjustStock('${p.id}', 15 - (p.stock || 0))" style="padding: 4px 8px; font-size: 0.76rem;">Set 15</button>
           </div>
         </td>
       </tr>
@@ -400,27 +391,43 @@ const AdminManager = {
 
   ensureData() {
     if (!localStorage.getItem(this.ORDERS_KEY)) {
-      localStorage.setItem(this.ORDERS_KEY, JSON.stringify(this.defaultOrders));
+      localStorage.setItem(this.ORDERS_KEY, JSON.stringify([]));
     }
-    if (!localStorage.getItem(this.INVENTORY_KEY)) {
+    const rawInv = localStorage.getItem(this.INVENTORY_KEY);
+    if (!rawInv) {
       localStorage.setItem(this.INVENTORY_KEY, JSON.stringify(this.defaultInventory));
-    }
-    if (!localStorage.getItem(this.COURIER_KEY)) {
-      localStorage.setItem(this.COURIER_KEY, JSON.stringify(this.defaultCourierConfig));
+    } else {
+      try {
+        const inv = JSON.parse(rawInv);
+        let updated = false;
+        this.defaultInventory.forEach(def => {
+          const found = inv.find(p => p.id === def.id || p.name === def.name);
+          if (!found) {
+            inv.push(def);
+            updated = true;
+          } else if (found.stock > 15 || found.stock === 150 || found.stock === 149) {
+            found.stock = 15;
+            updated = true;
+          }
+        });
+        if (updated) localStorage.setItem(this.INVENTORY_KEY, JSON.stringify(inv));
+      } catch(e) {
+        localStorage.setItem(this.INVENTORY_KEY, JSON.stringify(this.defaultInventory));
+      }
     }
   },
 
-  getCourierConfig() {
-    try {
-      return JSON.parse(localStorage.getItem(this.COURIER_KEY)) || this.defaultCourierConfig;
-    } catch(e) {
-      return this.defaultCourierConfig;
-    }
-  },
+  async setAllStock(val = 15) {
+    const inv = this.getInventory();
+    inv.forEach(p => p.stock = val);
+    this.saveInventory(inv);
 
-  saveCourierConfig(cfg) {
-    localStorage.setItem(this.COURIER_KEY, JSON.stringify(cfg));
-    this.renderCourierCard();
+    if (window.CloudDB && window.CloudDB.isConnected()) {
+      for (const p of inv) {
+        window.CloudDB.updateStock(p.id, val);
+      }
+    }
+    if (window.showToast) window.showToast(`All perfume reserves calibrated to ${val} units!`, 'success');
   },
 
   previousOrderCount: null,
@@ -687,33 +694,6 @@ on conflict (id) do nothing;</pre>
     }
   },
 
-  renderCourierCard() {
-    const cardEl = document.getElementById('admin-courier-card');
-    if (!cardEl) return;
-
-    const cfg = this.getCourierConfig();
-    cardEl.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-        <div style="display:flex; align-items:center; gap:14px;">
-          <div style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; background:var(--bg-secondary); border-radius:8px; border:1px solid var(--border-color); color:var(--brand-gold);">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-          </div>
-          <div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <h4 style="font-size:1.1rem; font-weight:700; color:var(--text-primary); margin:0;">${cfg.partner} Live Logistics API</h4>
-              <span class="badge" style="background:rgba(46, 204, 113, 0.15); color:#2ecc71; border:1px solid #2ecc71; font-size:0.75rem;">Connected (${cfg.latency})</span>
-            </div>
-            <div style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">Merchant Account: <strong>${cfg.accountNo}</strong> &nbsp;•&nbsp; Active Partner for Nationwide COD</div>
-          </div>
-        </div>
-
-        <div style="display:flex; gap:10px;">
-          <button class="btn btn-outline" onclick="AdminManager.openCourierSetupModal()" style="font-size:0.82rem; padding:8px 16px;">Configure Logistics API</button>
-        </div>
-      </div>
-    `;
-  },
-
   getOrders() {
     try {
       return JSON.parse(localStorage.getItem(this.ORDERS_KEY)) || [];
@@ -753,7 +733,6 @@ on conflict (id) do nothing;</pre>
 
     this.renderMetrics();
     this.renderCloudDbCard();
-    this.renderCourierCard();
     this.renderOrdersTable();
     this.renderInventoryTable();
     this.loadSiteConfig();
@@ -875,8 +854,6 @@ on conflict (id) do nothing;</pre>
       return;
     }
 
-    const cfg = this.getCourierConfig();
-
     tbody.innerHTML = filtered.map(o => {
       const cleanPhone = (o.phone || '').replace(/[^0-9]/g, '');
       const waPhone = cleanPhone.startsWith('03') ? '92' + cleanPhone.substring(1) : cleanPhone;
@@ -884,7 +861,7 @@ on conflict (id) do nothing;</pre>
       const pmLabel = o.paymentMethod || 'Cash on Delivery';
       const hasSS = !!o.paymentProof;
       const paymentNote = pmLabel === 'Cash on Delivery' ? `Total PKR ${o.total.toLocaleString()} (Cash on Delivery)` : `Total PKR ${o.total.toLocaleString()} (Paid via ${pmLabel})`;
-      const waMsg = encodeURIComponent(`Hello ${o.customerName}! Your order #${o.id} from Chudhary Perfumes is currently [${o.status}]. Tracking Number: ${trackingCN} via PostEx Courier to ${o.city}. ${paymentNote}. Thank you for shopping with Chudhary Perfumes!`);
+      const waMsg = encodeURIComponent(`Hello ${o.customerName}! Your order #${o.id} from Chudhary Perfumes is currently [${o.status}]. Tracking Reference: ${trackingCN} for delivery to ${o.city}. ${paymentNote}. Thank you for shopping with Chudhary Perfumes!`);
 
       return `
         <tr style="border-bottom: 1px solid var(--border-color);">
@@ -907,8 +884,8 @@ on conflict (id) do nothing;</pre>
             ` : '')}
           </td>
           <td style="padding: 14px 12px;">
-            <div style="font-size: 0.8rem; font-weight:700; color:var(--text-primary);">${trackingCN}</div>
-            <div style="font-size: 0.72rem; color:var(--text-muted);">${o.courierPartner || cfg.partner}</div>
+            <div style="font-size: 0.82rem; font-weight:700; color:var(--text-primary);">${trackingCN}</div>
+            <div style="font-size: 0.72rem; color:var(--text-muted);">Express Dispatch</div>
           </td>
           <td style="padding: 14px 12px;">
             <select onchange="AdminManager.updateOrderStatus('${o.id}', this.value)" style="padding: 6px 10px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 0.8rem; font-weight: 600;">
@@ -916,7 +893,7 @@ on conflict (id) do nothing;</pre>
               <option value="Payment Verified (SS Attached)" ${o.status === 'Payment Verified (SS Attached)' ? 'selected' : ''}>Payment Verified (SS Attached)</option>
               <option value="Awaiting Payment SS" ${o.status === 'Awaiting Payment SS' ? 'selected' : ''}>Awaiting Payment SS</option>
               <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
-              <option value="Dispatched" ${o.status === 'Dispatched' ? 'selected' : ''}>Dispatched (PostEx)</option>
+              <option value="Dispatched" ${o.status === 'Dispatched' ? 'selected' : ''}>Dispatched</option>
               <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
             </select>
           </td>
@@ -957,75 +934,11 @@ on conflict (id) do nothing;</pre>
     `).join('');
   },
 
-  openCourierSetupModal() {
-    const cfg = this.getCourierConfig();
-    const modal = document.querySelector('.quick-view-modal');
-    const overlay = document.querySelector('.modal-overlay');
-    if (!modal || !overlay) return;
-
-    modal.querySelector('.quick-view-body').innerHTML = `
-      <div style="padding:10px;">
-        <h3 style="font-family:var(--font-heading); font-size:1.5rem; color:var(--text-primary); margin-bottom:8px;">Connect Logistics API</h3>
-        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:20px;">Integrate PostEx API merchant credentials for automated Cash on Delivery booking & nationwide consignment tracking.</p>
-
-        <form id="admin-courier-form" onsubmit="AdminManager.handleCourierSetupSubmit(event)" style="display:flex; flex-direction:column; gap:16px;">
-          <div>
-            <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Courier API Partner:</label>
-            <select id="courier-partner-select" style="width:100%; padding:10px 14px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-size:0.9rem;">
-              <option value="PostEx Courier" selected>PostEx Courier (PostEx COD API v2)</option>
-              <option value="TCS Express">TCS Express (TCS Connect API)</option>
-              <option value="Leopards Courier">Leopards Courier (Leopards COD API)</option>
-              <option value="M&P Express Courier">M&P Express Courier API</option>
-            </select>
-          </div>
-
-          <div>
-            <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">PostEx Merchant Token / Token ID:</label>
-            <input type="text" id="courier-acc-input" value="${cfg.accountNo || 'PEX-CP-PK-9896'}" placeholder="e.g. PEX-CP-PK-9896" required style="width:100%; padding:10px 14px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-size:0.9rem;">
-          </div>
-
-          <div>
-            <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">PostEx Operational Secret Key:</label>
-            <input type="password" id="courier-key-input" value="${cfg.apiKey || 'POSTEX_LIVE_KEY_84920'}" placeholder="e.g. POSTEX_LIVE_KEY_84920" required style="width:100%; padding:10px 14px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-size:0.9rem;">
-          </div>
-
-          <div style="display:flex; gap:12px; margin-top:10px;">
-            <button type="submit" class="btn btn-primary" style="flex:1;">Save & Verify PostEx API</button>
-            <button type="button" class="btn btn-outline" onclick="ShopManager.closeQuickView()" style="padding:10px 20px;">Cancel</button>
-          </div>
-        </form>
-      </div>
-    `;
-
-    modal.classList.add('active');
-    overlay.classList.add('active');
-  },
-
-  handleCourierSetupSubmit(e) {
-    e.preventDefault();
-    const partner = document.getElementById('courier-partner-select').value;
-    const acc = document.getElementById('courier-acc-input').value;
-    const key = document.getElementById('courier-key-input').value;
-
-    const newCfg = {
-      partner: partner,
-      accountNo: acc,
-      apiKey: key,
-      status: 'Connected',
-      latency: Math.floor(18 + Math.random()*15) + 'ms'
-    };
-
-    this.saveCourierConfig(newCfg);
-    ShopManager.closeQuickView();
-    if (window.showToast) window.showToast(`Successfully connected to ${partner} API!`, 'success');
-  },
-
   openLiveTrackingModal(orderId) {
     const orders = this.getOrders();
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
 
-    const cfg = this.getCourierConfig();
     const trackingCN = order.trackingNo || ('PEX-' + Math.floor(10000000 + Math.random()*90000000));
 
     const modal = document.querySelector('.quick-view-modal');
@@ -1040,12 +953,12 @@ on conflict (id) do nothing;</pre>
       <div style="padding:10px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
           <div>
-            <span class="badge" style="background:#2563eb; color:#fff; font-weight:700;">POSTEX COURIER LIVE TRACKING</span>
-            <h2 style="font-size:1.6rem; font-family:var(--font-heading); color:var(--text-primary); margin-top:4px; font-weight:800;">CN #${trackingCN}</h2>
+            <span class="badge" style="background:rgba(46, 204, 113, 0.15); color:#2ecc71; border:1px solid #2ecc71; font-weight:700;">LIVE ORDER TRACKING</span>
+            <h2 style="font-size:1.6rem; font-family:var(--font-heading); color:var(--text-primary); margin-top:4px; font-weight:800;">Order #${order.id}</h2>
           </div>
           <div style="text-align:right;">
-            <div style="font-size:0.82rem; color:var(--text-muted);">Partner: <strong style="color:var(--brand-gold);">PostEx Courier</strong></div>
-            <div style="font-size:0.82rem; color:var(--text-muted);">Est. Delivery: <strong>24 Hours Fast Delivery</strong></div>
+            <div style="font-size:0.82rem; color:var(--text-muted);">Tracking Ref: <strong style="color:var(--brand-gold);">${trackingCN}</strong></div>
+            <div style="font-size:0.82rem; color:var(--text-muted);">Est. Delivery: <strong>24 to 48 Hours</strong></div>
           </div>
         </div>
 
@@ -1054,7 +967,7 @@ on conflict (id) do nothing;</pre>
             <div><strong>Customer:</strong> ${order.customerName} (${order.phone})</div>
             <div><strong>Destination City:</strong> <span style="color:var(--brand-gold); font-weight:700;">${order.city}</span></div>
             <div><strong>Fragrance Items:</strong> ${order.items}</div>
-            <div><strong>PostEx COD Total:</strong> <strong style="color:var(--text-primary);">PKR ${order.total.toLocaleString()}</strong></div>
+            <div><strong>Total Payable:</strong> <strong style="color:var(--text-primary);">PKR ${order.total.toLocaleString()}</strong> (${order.paymentMethod})</div>
           </div>
         </div>
 
@@ -1063,26 +976,26 @@ on conflict (id) do nothing;</pre>
           
           <div style="position:relative;">
             <div style="position:absolute; left:-33px; top:0; width:16px; height:16px; border-radius:50%; background:var(--status-success); border:3px solid var(--bg-card);"></div>
-            <div style="font-weight:700; color:var(--text-primary); font-size:0.92rem;">Digital Consignment Booking Generated</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">${order.date} • Automatic COD Receipt Printed</div>
+            <div style="font-weight:700; color:var(--text-primary); font-size:0.92rem;">Order Confirmed & Registered</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${order.date} • Placed in atelier database</div>
           </div>
 
           <div style="position:relative;">
             <div style="position:absolute; left:-33px; top:0; width:16px; height:16px; border-radius:50%; background:${isProcessing ? 'var(--status-success)' : 'var(--border-color)'}; border:3px solid var(--bg-card);"></div>
-            <div style="font-weight:700; color:${isProcessing ? 'var(--text-primary)' : 'var(--text-muted)'}; font-size:0.92rem;">Macerated Flacon Sealed at Atelier</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">${isProcessing ? 'Inspected & Sealed in Fragrance Safeguard Box' : 'Awaiting fulfillment queue'}</div>
+            <div style="font-weight:700; color:${isProcessing ? 'var(--text-primary)' : 'var(--text-muted)'}; font-size:0.92rem;">Flacon Inspection & Luxury Packaging</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${isProcessing ? 'Inspected & Sealed in Fragrance Safeguard Box' : 'Awaiting packaging'}</div>
           </div>
 
           <div style="position:relative;">
             <div style="position:absolute; left:-33px; top:0; width:16px; height:16px; border-radius:50%; background:${isDispatched ? 'var(--status-success)' : 'var(--border-color)'}; border:3px solid var(--bg-card);"></div>
-            <div style="font-weight:700; color:${isDispatched ? 'var(--text-primary)' : 'var(--text-muted)'}; font-size:0.92rem;">Transferred to PostEx Courier Logistics</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">${isDispatched ? `In Transit at PostEx ${order.city} Regional Hub` : 'Awaiting PostEx pickup courier'}</div>
+            <div style="font-weight:700; color:${isDispatched ? 'var(--text-primary)' : 'var(--text-muted)'}; font-size:0.92rem;">Dispatched & In Transit</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${isDispatched ? `In Transit for delivery to ${order.city}` : 'Awaiting dispatch'}</div>
           </div>
 
           <div style="position:relative;">
             <div style="position:absolute; left:-33px; top:0; width:16px; height:16px; border-radius:50%; background:${isDelivered ? 'var(--status-success)' : 'var(--border-color)'}; border:3px solid var(--bg-card);"></div>
-            <div style="font-weight:700; color:${isDelivered ? 'var(--status-success)' : 'var(--text-muted)'}; font-size:0.92rem;">Delivered & Remittance Settled</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">${isDelivered ? 'Successfully delivered to customer doorstep' : `Assigned to PostEx Courier for delivery in ${order.city}`}</div>
+            <div style="font-weight:700; color:${isDelivered ? 'var(--status-success)' : 'var(--text-muted)'}; font-size:0.92rem;">Delivered to Customer Doorstep</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${isDelivered ? 'Successfully delivered to patron' : `Out for delivery to ${order.city}`}</div>
           </div>
 
         </div>
@@ -1226,7 +1139,6 @@ on conflict (id) do nothing;</pre>
   },
 
   async simulateNewOrder() {
-    const cfg = this.getCourierConfig();
     const sampleNames = ['Bilal Ahmed', 'Zainab Bibi', 'Farhan Saeed', 'Sara Tariq', 'Omer Chaudhry'];
     const sampleCities = ['Lahore', 'Faisalabad', 'Multan', 'Rawalpindi', 'Peshawar', 'Sialkot'];
     const samplePerfumes = [
@@ -1251,7 +1163,7 @@ on conflict (id) do nothing;</pre>
       orderId = `CH-${String(lastSeq).padStart(3, '0')}`;
     }
 
-    const trackingCN = 'PEX-' + Math.floor(10000000 + Math.random()*90000000);
+    const trackingCN = 'TRK-' + Math.floor(10000000 + Math.random()*90000000);
     const now = new Date();
     const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
@@ -1268,7 +1180,7 @@ on conflict (id) do nothing;</pre>
       date: timeStr,
       status: 'Pending COD',
       trackingNo: trackingCN,
-      courierPartner: 'PostEx Courier'
+      courierPartner: 'Standard Express'
     };
 
     const orders = this.getOrders();
