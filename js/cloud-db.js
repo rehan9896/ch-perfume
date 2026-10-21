@@ -6,19 +6,22 @@
 const CloudDB = {
   CONFIG_KEY: 'cp_supabase_config',
 
+  DEFAULT_URL: 'https://xkbinsypzcnwduacokex.supabase.co',
+  DEFAULT_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhrYmluc3lwemNud2R1YWNva2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI1NTczNDMsImV4cCI6MjEwODEzMzM0M30.4UoUv7fh3_jnDhrjMj1CMv1qwm_37V6wNNl1Ogx8kIg',
+
   // Retrieve current Supabase Configuration (from localStorage or embedded default)
   getConfig() {
     try {
       const cfg = JSON.parse(localStorage.getItem(this.CONFIG_KEY)) || {};
-      const url = (cfg.url || window.CH_SUPABASE_URL || '').trim().replace(/\/+$/, '');
-      const key = (cfg.key || window.CH_SUPABASE_KEY || '').trim();
+      const url = (cfg.url || this.DEFAULT_URL || window.CH_SUPABASE_URL || '').trim().replace(/\/+$/, '');
+      const key = (cfg.key || this.DEFAULT_KEY || window.CH_SUPABASE_KEY || '').trim();
       return {
         url: url,
         key: key,
         enabled: !!(url && key)
       };
     } catch(e) {
-      return { url: '', key: '', enabled: false };
+      return { url: this.DEFAULT_URL, key: this.DEFAULT_KEY, enabled: true };
     }
   },
 
