@@ -33,7 +33,7 @@ const DashboardManager = {
 
     const orders = JSON.parse(localStorage.getItem('cp_order_history')) || [
       {
-        orderId: 'CP-892401',
+        orderId: 'CH-001',
         date: 'Jul 28, 2026',
         items: [{ name: 'Bold Rush EDP (50ml)', quantity: 1, price: 18500 }],
         total: 18500,
@@ -41,7 +41,7 @@ const DashboardManager = {
         shippingAddress: 'House 42, Block 5, Gulberg III, Lahore'
       },
       {
-        orderId: 'CP-731920',
+        orderId: 'CH-002',
         date: 'Jun 15, 2026',
         items: [{ name: 'Black Crown EDP (50ml)', quantity: 1, price: 24000 }],
         total: 24000,
@@ -59,7 +59,7 @@ const DashboardManager = {
       const itemsText = Array.isArray(o.items)
         ? o.items.map(i => `${i.name} (x${i.quantity})`).join(', ')
         : (o.items || 'Handcrafted Fragrance');
-      const orderNum = o.orderId || o.id || 'CP-0000';
+      const orderNum = o.orderId || o.id || 'CH-001';
       const isDelivered = o.status === 'Delivered';
       const hasSS = !!o.paymentProof;
 

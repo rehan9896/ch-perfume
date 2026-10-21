@@ -436,7 +436,7 @@ const CheckoutManager = {
     }
   },
 
-  handleFormSubmit(e) {
+  async handleFormSubmit(e) {
     e.preventDefault();
 
     const items = CartManager.getItems();
@@ -456,7 +456,16 @@ const CheckoutManager = {
 
     const subtotal = CartManager.getTotal();
     const finalTotal = Math.max(0, subtotal - this.appliedDiscount);
-    const orderId = 'CP-' + Math.floor(10000 + Math.random() * 90000);
+
+    // Generate sequential order ID: CH-001, CH-002, CH-003, ...
+    let orderId = 'CH-001';
+    if (window.CloudDB && typeof window.CloudDB.getNextOrderId === 'function') {
+      orderId = await window.CloudDB.getNextOrderId();
+    } else {
+      const lastSeq = (parseInt(localStorage.getItem('cp_last_order_seq'), 10) || 0) + 1;
+      localStorage.setItem('cp_last_order_seq', String(lastSeq));
+      orderId = `CH-${String(lastSeq).padStart(3, '0')}`;
+    }
     const trackingNo = 'PEX-' + Math.floor(10000000 + Math.random() * 90000000);
 
     const now = new Date();

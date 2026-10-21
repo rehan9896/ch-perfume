@@ -70,8 +70,63 @@ const CloudDB = {
   },
 
   /* --------------------------------------------------------------------------
-     1. ORDERS SYNCHRONIZATION (Save, Retrieve, Update Status, Delete)
+     1. ORDERS SYNCHRONIZATION (Save, Retrieve, Update Status, Delete, Numbering)
      -------------------------------------------------------------------------- */
+
+  // Generate next sequential Order ID in the format: CH-001, CH-002, CH-003, ...
+  async getNextOrderId() {
+    let maxNum = 0;
+
+    // 1. Check local placed orders
+    try {
+      const localOrders = JSON.parse(localStorage.getItem('cp_placed_orders')) || [];
+      for (const o of localOrders) {
+        const idStr = String(o.id || o.orderId || '');
+        const match = idStr.match(/CH[ -]?(\d+)/i);
+        if (match) {
+          const num = parseInt(match[1], 10);
+          if (!isNaN(num) && num > maxNum) maxNum = num;
+        }
+      }
+    } catch(e) {}
+
+    // 2. Check local sequence tracking counter
+    try {
+      const lastSeq = parseInt(localStorage.getItem('cp_last_order_seq'), 10) || 0;
+      if (lastSeq > maxNum) maxNum = lastSeq;
+    } catch(e) {}
+
+    // 3. Query Supabase cloud for existing orders to ensure cross-device synchronization
+    const cfg = this.getConfig();
+    if (cfg.enabled) {
+      try {
+        const res = await fetch(`${cfg.url}/rest/v1/orders?select=id,order_id&order=created_at.desc&limit=200`, {
+          method: 'GET',
+          headers: this.getHeaders()
+        });
+        if (res.ok) {
+          const rows = await res.json();
+          for (const r of rows) {
+            const idStr = String(r.id || r.order_id || '');
+            const match = idStr.match(/CH[ -]?(\d+)/i);
+            if (match) {
+              const num = parseInt(match[1], 10);
+              if (!isNaN(num) && num > maxNum) maxNum = num;
+            }
+          }
+        }
+      } catch(err) {
+        console.warn('Could not query Supabase for sequence counter:', err);
+      }
+    }
+
+    const nextNum = maxNum + 1;
+    try {
+      localStorage.setItem('cp_last_order_seq', String(nextNum));
+    } catch(e) {}
+
+    return `CH-${String(nextNum).padStart(3, '0')}`;
+  },
 
   // Save new customer order (called upon checkout submission)
   async saveOrder(order) {

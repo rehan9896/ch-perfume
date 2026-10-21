@@ -605,7 +605,7 @@ function renderTrackerPrompt(prefillId = '') {
     `
     : `
       <div style="background:var(--bg-secondary); padding:12px 16px; border-radius:8px; border:1px solid var(--border-color); font-size:0.82rem; color:var(--text-muted); line-height:1.5;">
-        💡 <em>Your Order Number was provided upon checkout and sent to your WhatsApp (e.g. <code>CP-84920</code>).</em>
+        💡 <em>Your Order Number was provided upon checkout and sent to your WhatsApp (e.g. <code>CH-001</code>).</em>
       </div>
     `;
 
@@ -626,7 +626,7 @@ function renderTrackerPrompt(prefillId = '') {
       <div>
         <label style="display:block; font-size:0.8rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Order Number:</label>
         <div style="display:flex; gap:10px;">
-          <input type="text" id="track-input-id" value="${prefillId}" placeholder="e.g. CP-84920 or 84920" required style="flex:1; padding:12px 16px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; color:var(--text-primary); font-size:16px; outline:none;">
+          <input type="text" id="track-input-id" value="${prefillId}" placeholder="e.g. CH-001 or 001" required style="flex:1; padding:12px 16px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; color:var(--text-primary); font-size:16px; outline:none;">
           <button type="submit" class="btn btn-primary" style="padding:12px 20px; font-weight:700;">Track Order</button>
         </div>
       </div>
@@ -643,9 +643,9 @@ window.executeOrderTracking = async function(queryId) {
   const modalContainer = document.querySelector('.global-tracker-modal');
   if (!modalContainer) return;
 
-  const cleanId = cleanInput.toUpperCase();
+  const cleanId = cleanInput.toUpperCase().replace(/\s+/g, '-');
   const numericOnly = cleanInput.replace(/[^0-9]/g, '');
-  const withoutPrefix = cleanId.replace(/^#?CP-?/, '');
+  const withoutPrefix = cleanInput.toUpperCase().replace(/^#?(CP|CH)[- ]?/, '');
 
   let orders = [];
   try {
@@ -673,13 +673,17 @@ window.executeOrderTracking = async function(queryId) {
 
   // Find matching real-time order
   const order = orders.find(o => {
-    const oid = ((o.id || o.orderId || '') + '').toUpperCase();
-    if (!oid) return false;
+    const rawOid = ((o.id || o.orderId || '') + '').toUpperCase();
+    if (!rawOid) return false;
+    const oid = rawOid.replace(/\s+/g, '-');
     const oNum = oid.replace(/[^0-9]/g, '');
+    const cleanOid = oid.replace(/^#?(CP|CH)[- ]?/, '');
+
     return oid === cleanId || 
+           oid === `CH-${cleanId}` ||
            oid === `CP-${cleanId}` ||
-           oid.replace('CP-', '') === withoutPrefix ||
-           (numericOnly && oNum === numericOnly);
+           cleanOid === withoutPrefix ||
+           (numericOnly && parseInt(oNum, 10) === parseInt(numericOnly, 10));
   });
 
   // If order NOT FOUND: Display clear, real-time message without generating fake mockup data

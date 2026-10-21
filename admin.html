@@ -181,8 +181,10 @@
                 <span class="badge" style="background:rgba(46, 204, 113, 0.15); color:#2ecc71; border:1px solid #2ecc71; font-size:0.75rem;">Active Registry</span>
               </div>
               <p style="font-size: 0.86rem; color: var(--text-secondary);">Real-time consignment verification, dispatch status, and direct client correspondence.</p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btn-primary" onclick="AdminManager.simulateNewOrder()" style="padding: 10px 18px; font-size: 0.85rem; font-weight: 700;">+ Simulate Consignment</button>
+              <button class="btn btn-outline" onclick="AdminManager.resetOrdersToSequential()" style="padding: 10px 14px; font-size: 0.82rem; border-color:var(--border-color); color:var(--text-muted);" title="Clear old test orders and restart sequence from CH-001">🔄 Reset to CH-001</button>
             </div>
-            <button class="btn btn-primary" onclick="AdminManager.simulateNewOrder()" style="padding: 10px 20px; font-size: 0.85rem; font-weight: 700;">+ Simulate Consignment</button>
           </div>
 
           <!-- Search & Filter Controls Toolbar -->
@@ -363,10 +365,10 @@
 
   <script src="js/theme.js"></script>
   <script src="js/animations.js"></script>
-  <script src="js/cloud-db.js?v=3.0"></script>
-  <script src="js/script.js"></script>
+  <script src="js/cloud-db.js?v=3.1"></script>
+  <script src="js/script.js?v=3.1"></script>
   <script src="js/shop.js"></script>
-  <script src="js/admin.js?v=3.0"></script>
+  <script src="js/admin.js?v=3.1"></script>
 
   <!-- Mobile Sticky Bottom Navigation Bar (Mobile Only) -->
   <nav class="mobile-bottom-bar">

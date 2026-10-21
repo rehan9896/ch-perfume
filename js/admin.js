@@ -17,50 +17,7 @@ const AdminManager = {
   currentStatusFilter: 'all',
 
   // Initial Sample Orders with PostEx Courier Consignment Tracking
-  defaultOrders: [
-    {
-      id: 'CP-9842',
-      customerName: 'Hamza Malik',
-      phone: '03001234567',
-      city: 'Lahore',
-      address: 'Gulberg III, Main Boulevard, Lahore',
-      items: 'Black Crown (100ml) × 1',
-      total: 1990,
-      paymentMethod: 'Cash on Delivery',
-      date: '2026-08-01 18:30',
-      status: 'Pending COD',
-      trackingNo: 'PEX-98420192',
-      courierPartner: 'PostEx Courier'
-    },
-    {
-      id: 'CP-9843',
-      customerName: 'Ayesha Khan',
-      phone: '03219876543',
-      city: 'Karachi',
-      address: 'DHA Phase 6, Khayaban-e-Shahbaz, Karachi',
-      items: 'Bold Rush (100ml) × 1, Fresh Aura (100ml) × 1',
-      total: 3580,
-      paymentMethod: 'Cash on Delivery',
-      date: '2026-08-01 19:15',
-      status: 'Dispatched',
-      trackingNo: 'PEX-74829102',
-      courierPartner: 'PostEx Courier'
-    },
-    {
-      id: 'CP-9844',
-      customerName: 'Usman Ali',
-      phone: '03335557788',
-      city: 'Islamabad',
-      address: 'Sector F-8/2, Margalla Road, Islamabad',
-      items: 'Elite Touch (100ml) × 1',
-      total: 2150,
-      paymentMethod: 'Cash on Delivery',
-      date: '2026-08-01 20:00',
-      status: 'Delivered',
-      trackingNo: 'PEX-63910284',
-      courierPartner: 'PostEx Courier'
-    }
-  ],
+  defaultOrders: [],
 
   // Initial Inventory for all 5 Active Fragrances
   defaultInventory: [
@@ -883,10 +840,13 @@ on conflict (id) do nothing;</pre>
     const orders = this.getOrders();
     const query = this.currentSearchQuery.toLowerCase().trim();
     const filter = this.currentStatusFilter.toLowerCase().trim();
+    const normQuery = query.replace(/[^a-z0-9]/g, '');
 
     return orders.filter(o => {
+      const normId = (o.id || '').toLowerCase().replace(/[^a-z0-9]/g, '');
       const matchesSearch = !query || 
         o.id.toLowerCase().includes(query) || 
+        (normQuery && normId.includes(normQuery)) ||
         o.customerName.toLowerCase().includes(query) || 
         (o.phone && o.phone.toLowerCase().includes(query)) ||
         (o.trackingNo && o.trackingNo.toLowerCase().includes(query)) ||
@@ -908,7 +868,7 @@ on conflict (id) do nothing;</pre>
       tbody.innerHTML = `
         <tr>
           <td colspan="8" style="padding: 32px; text-align: center; color: var(--text-muted);">
-            No orders match your search criteria. Click "+ Simulate New Order" to create a PostEx order.
+            No orders match your search criteria. As customers order on your website, their orders will appear here sequentially starting from <strong>CH-001</strong>.
           </td>
         </tr>
       `;
@@ -1265,7 +1225,7 @@ on conflict (id) do nothing;</pre>
     }
   },
 
-  simulateNewOrder() {
+  async simulateNewOrder() {
     const cfg = this.getCourierConfig();
     const sampleNames = ['Bilal Ahmed', 'Zainab Bibi', 'Farhan Saeed', 'Sara Tariq', 'Omer Chaudhry'];
     const sampleCities = ['Lahore', 'Faisalabad', 'Multan', 'Rawalpindi', 'Peshawar', 'Sialkot'];
@@ -1280,14 +1240,24 @@ on conflict (id) do nothing;</pre>
     const randomName = sampleNames[Math.floor(Math.random() * sampleNames.length)];
     const randomCity = sampleCities[Math.floor(Math.random() * sampleCities.length)];
     const randomPerfume = samplePerfumes[Math.floor(Math.random() * samplePerfumes.length)];
-    const orderNum = Math.floor(1000 + Math.random() * 9000);
-    const trackingCN = 'PEX-' + Math.floor(10000000 + Math.random()*90000000);
 
+    // Sequential Order ID: CH-001, CH-002, CH-003, ...
+    let orderId = 'CH-001';
+    if (window.CloudDB && typeof window.CloudDB.getNextOrderId === 'function') {
+      orderId = await window.CloudDB.getNextOrderId();
+    } else {
+      const lastSeq = (parseInt(localStorage.getItem('cp_last_order_seq'), 10) || 0) + 1;
+      localStorage.setItem('cp_last_order_seq', String(lastSeq));
+      orderId = `CH-${String(lastSeq).padStart(3, '0')}`;
+    }
+
+    const trackingCN = 'PEX-' + Math.floor(10000000 + Math.random()*90000000);
     const now = new Date();
     const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
     const newOrder = {
-      id: `CP-${orderNum}`,
+      id: orderId,
+      orderId: orderId,
       customerName: randomName,
       phone: `032${Math.floor(1000000 + Math.random() * 9000000)}`,
       city: randomCity,
@@ -1311,6 +1281,15 @@ on conflict (id) do nothing;</pre>
     }
 
     if (window.showToast) window.showToast(`New Live Order ${newOrder.id} created & saved!`, 'success');
+  },
+
+  resetOrdersToSequential() {
+    if (confirm('Clear old test mock orders and reset sequence to start fresh from CH-001?')) {
+      localStorage.setItem('cp_last_order_seq', '0');
+      const orders = this.getOrders().filter(o => !String(o.id).startsWith('CP-'));
+      this.saveOrders(orders);
+      if (window.showToast) window.showToast('Order sequence reset! Next order will be CH-001.', 'success');
+    }
   },
 
   bindEvents() {
